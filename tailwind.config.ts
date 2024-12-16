@@ -15,11 +15,8 @@ export default {
         'blue-darkest': '#0D1F29',
         'light-gray': '#F7F7F7',
         'light-gray-blue': '#DFE3E5',
-        "blackOpacity5": "#0000000D"
       },
-      fontFamily: {
-        libre: ['"Libre Caslon Text"', 'serif'],
-      },
+      
     },
   },
   plugins: [],
