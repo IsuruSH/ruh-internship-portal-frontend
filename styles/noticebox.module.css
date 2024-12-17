@@ -1,0 +1,18 @@
+.noticeBox {
+  @apply bg-white p-4 rounded-lg shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl;
+  text-align: center;
+  max-width: 300px; /* Make the box smaller */
+  margin: auto; /* Center the box horizontally */
+}
+
+.noticeImage {
+  @apply rounded-md mb-4;
+}
+
+.noticeTitle {
+  @apply text-xl font-bold mb-2;
+}
+
+.noticeContent {
+  @apply text-gray-600;
+}

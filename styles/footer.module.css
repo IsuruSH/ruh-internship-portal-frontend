@@ -1,0 +1,32 @@
+.footerContainer {
+  @apply relative bg-no-repeat bg-cover text-white py-6 mt-8;
+  background-image: url('/assets/unigray.png');
+}
+
+.overlay {
+  @apply absolute inset-0 bg-black opacity-50;
+}
+
+.footerGrid {
+  @apply relative container mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 px-6;
+}
+
+.footerSection {
+  @apply flex flex-col  items-center;
+}
+
+.footerSection:first-child {
+  @apply items-start text-left; /* Align the first section to the left */
+}
+
+.footerTitle {
+  @apply text-lg font-bold mb-6;
+}
+
+.footerText {
+  @apply font-bold text-gray-400 text-center mt-6;
+}
+
+.socialIcon {
+  @apply w-8 h-6;
+}

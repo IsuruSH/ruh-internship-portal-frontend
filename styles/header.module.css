@@ -1,0 +1,11 @@
+.headerContainer {
+  @apply bg-[#0D1F29] text-white py-4 shadow-md;
+}
+
+.headerNav {
+  @apply flex space-x-6 text-lg;
+}
+
+.headerTitle {
+  @apply text-2xl font-bold tracking-wide ml-3;
+}
