@@ -7,16 +7,7 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        
-        'blue-dark': '#35627A',
-        'blue-darker': '#203F50',
-        'blue-darkest': '#0D1F29',
-        'light-gray': '#F7F7F7',
-        'light-gray-blue': '#DFE3E5',
-      },
-      
+    extend: { 
     },
   },
   plugins: [],
