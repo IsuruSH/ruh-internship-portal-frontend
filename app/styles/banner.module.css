@@ -1,0 +1,21 @@
+
+
+.bannerContainer {
+    @apply relative h-[600px] overflow-hidden;
+}
+
+.bannerImage {
+    @apply object-cover w-full max-h-full filter brightness-50;
+}
+
+.bannerTextContainer {
+    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white;
+}
+
+.bannerTitle {
+    @apply text-4xl font-bold;
+}
+
+.bannerSubtitle {
+    @apply text-2xl;
+}
