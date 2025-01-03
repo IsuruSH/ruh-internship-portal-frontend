@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-const Page = ({ onClose }) => {
-  const [isSignIn, setIsSignIn] = useState(true);
+const Page = ({ onClose, initialMode }) => {
+  const [isSignIn, setIsSignIn] = useState(initialMode);
   const [formData, setFormData] = useState({
     signInemail: "",
     password: "",
@@ -23,7 +23,7 @@ const Page = ({ onClose }) => {
     const { id, value } = e.target;
     const updatedFormData = { ...formData, [id]: value };
     setFormData(updatedFormData);
-    
+
     // Validate input on change
     if (isSignIn) {
       validateSignIn(updatedFormData);
@@ -31,7 +31,6 @@ const Page = ({ onClose }) => {
       validateSignUp(updatedFormData);
     }
   };
-  
 
   const validateSignIn = (data) => {
     const newErrors = {};
@@ -78,7 +77,6 @@ const Page = ({ onClose }) => {
       }
     }
   };
-  
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-transparent">
@@ -94,11 +92,16 @@ const Page = ({ onClose }) => {
               >
                 &times;
               </button>
-              <h2 className="text-[32px]  text-center leading-normal font-bold mb-4 text-[#333]">Sign In</h2>
+              <h2 className="text-[32px]  text-center leading-normal font-bold mb-4 text-[#333]">
+                Sign In
+              </h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Email Field */}
                 <div className="space-y-2 mt-2">
-                  <label htmlFor="signInemail" className="text-[#666] font-poppins text-[16px] font-normal leading-normal">
+                  <label
+                    htmlFor="signInemail"
+                    className="text-[#666] font-poppins text-[16px] font-normal leading-normal"
+                  >
                     Email
                   </label>
                   <input
@@ -109,12 +112,17 @@ const Page = ({ onClose }) => {
                     required
                     className="block w-full rounded-[12px] border border-gray-300 px-4 py-3 text-base text-gray-900 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  {errors.signInemail && <p className="text-red-500 text-sm">{errors.signInemail}</p>}
+                  {errors.signInemail && (
+                    <p className="text-red-500 text-sm">{errors.signInemail}</p>
+                  )}
                 </div>
 
                 {/* Password Field */}
                 <div className="space-y-2 mt-2">
-                  <label htmlFor="password" className="text-[#666] font-poppins text-[16px] font-normal leading-normal">
+                  <label
+                    htmlFor="password"
+                    className="text-[#666] font-poppins text-[16px] font-normal leading-normal"
+                  >
                     Password
                   </label>
                   <input
@@ -125,13 +133,15 @@ const Page = ({ onClose }) => {
                     required
                     className="block w-full rounded-[12px] border border-gray-300 px-4 py-3 text-base text-gray-900 mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                  {errors.password && (
+                    <p className="text-red-500 text-sm">{errors.password}</p>
+                  )}
                 </div>
 
                 {/* Forgot password */}
                 <div className="flex justify-end ">
-                  <a 
-                    href="#" 
+                  <a
+                    href="#"
                     className="text-[#111] hover:text-blue-700 text-[16px] font-medium leading-normal underline"
                   >
                     Forgot password?
@@ -166,7 +176,9 @@ const Page = ({ onClose }) => {
                     type="checkbox"
                     className="form-checkbox text-[#333]"
                   />
-                  <span className="ml-2 text-[16px] text-[#333] font-normal leading-normal">Remember me</span>
+                  <span className="ml-2 text-[16px] text-[#333] font-normal leading-normal">
+                    Remember me
+                  </span>
                 </label>
                 <a
                   href="#"
@@ -219,10 +231,15 @@ const Page = ({ onClose }) => {
               >
                 &times;
               </button>
-              <h2 className="text-[32px]  text-center leading-normal font-bold mb-4 text-[#333]">Sign Up</h2>
+              <h2 className="text-[32px]  text-center leading-normal font-bold mb-4 text-[#333]">
+                Sign Up
+              </h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label htmlFor="scNumber" className="text-[#666] font-poppins text-[16px] font-normal leading-normal">
+                  <label
+                    htmlFor="scNumber"
+                    className="text-[#666] font-poppins text-[16px] font-normal leading-normal"
+                  >
                     SC number
                   </label>
                   <input
@@ -232,10 +249,15 @@ const Page = ({ onClose }) => {
                     onChange={handleInputChange}
                     className="w-full p-3 border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  {errors.scNumber && <p className="text-red-500 text-sm">{errors.scNumber}</p>}
+                  {errors.scNumber && (
+                    <p className="text-red-500 text-sm">{errors.scNumber}</p>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor="email" className="text-[#666] font-poppins text-[16px] font-normal leading-normal">
+                  <label
+                    htmlFor="email"
+                    className="text-[#666] font-poppins text-[16px] font-normal leading-normal"
+                  >
                     Email
                   </label>
                   <input
@@ -245,23 +267,35 @@ const Page = ({ onClose }) => {
                     onChange={handleInputChange}
                     className="w-full p-3 border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                  {errors.email && (
+                    <p className="text-red-500 text-sm">{errors.email}</p>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor="signUpPassword" className="text-[#666] font-poppins text-[16px] font-normal leading-normal">
+                  <label
+                    htmlFor="signUpPassword"
+                    className="text-[#666] font-poppins text-[16px] font-normal leading-normal"
+                  >
                     Password
                   </label>
                   <input
-                    id ="signUpPassword"
+                    id="signUpPassword"
                     type="password"
                     value={formData.signUpPassword}
                     onChange={handleInputChange}
                     className="w-full p-3 border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  {errors.signUpPassword && <p className="text-red-500 text-sm">{errors.signUpPassword}</p>}
+                  {errors.signUpPassword && (
+                    <p className="text-red-500 text-sm">
+                      {errors.signUpPassword}
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor="confirmPassword" className="text-[#666] font-poppins text-[16px] font-normal leading-normal">
+                  <label
+                    htmlFor="confirmPassword"
+                    className="text-[#666] font-poppins text-[16px] font-normal leading-normal"
+                  >
                     Confirm Password
                   </label>
                   <input
@@ -271,7 +305,11 @@ const Page = ({ onClose }) => {
                     onChange={handleInputChange}
                     className="w-full p-3 border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                  {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
+                  {errors.confirmPassword && (
+                    <p className="text-red-500 text-sm">
+                      {errors.confirmPassword}
+                    </p>
+                  )}
                 </div>
                 <button
                   type="submit"
@@ -294,8 +332,6 @@ const Page = ({ onClose }) => {
             </div>
           )}
         </div>
-
-        
       </div>
     </div>
   );
