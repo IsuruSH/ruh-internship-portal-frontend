@@ -80,7 +80,7 @@ const Page = ({ onClose, initialMode }) => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-transparent">
-      <div className="bg-white rounded-[24px] shadow-lg flex w-[900px] h-[640px] relative">
+      <div className="bg-white text-black rounded-[24px] shadow-lg flex w-[900px] h-[640px] relative">
         {/* Left Section */}
         <div className="w-1/2 p-4 relative rounded-l-lg overflow-hidden">
           {isSignIn ? (
