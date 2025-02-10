@@ -1,10 +1,13 @@
 import Image from "next/image";
 import Banner from "./components/home/Banner";
 import NoticesSection from "./components/home/NoticeSection";
+import Header from "./layouts/Header";
+import Footer from "./layouts/Footer";
 
 export default function HomePage() {
   return (
     <div>
+      <Header />
       <Banner />
       <section className="container mx-auto px-6 py-12 flex flex-col lg:flex-row items-center">
         <div className="lg:w-1/2">
@@ -44,6 +47,7 @@ export default function HomePage() {
         </div>
       </section>
       <NoticesSection />
+      <Footer />
     </div>
   );
 }

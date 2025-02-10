@@ -50,25 +50,19 @@ const Header = () => {
             </li>
           </ul>
           <div className="flex space-x-6">
-            <button
-              onClick={() => handleOpenModal(true)}
+            <Link
+              href={"pages/auth?mode=login"}
               className="max-w-xs px-4 py-2 border border-yellow-500 text-yellow-500 rounded"
             >
               Login
-            </button>
+            </Link>
 
-            <button
-              onClick={() => handleOpenModal(false)}
+            <Link
+              href={"pages/auth?mode=signup"}
               className="max-w-xs px-4 py-2 bg-yellow-500 text-black rounded"
             >
               Sign Up
-            </button>
-
-            {isModalOpen && (
-              <div className="fixed inset-0 bg-opacity-90 flex justify-center items-center z-50">
-                <Page onClose={handleCloseModal} initialMode={mode} />
-              </div>
-            )}
+            </Link>
           </div>
         </nav>
       </div>

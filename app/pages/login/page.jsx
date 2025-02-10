@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
 
-const Page = ({ onClose, initialMode }) => {
-  const [isSignIn, setIsSignIn] = useState(initialMode);
+const Page = ({}) => {
+  // const [isSignIn, setIsSignIn] = useState();
   const [formData, setFormData] = useState({
     signInemail: "",
     password: "",
@@ -13,9 +14,15 @@ const Page = ({ onClose, initialMode }) => {
     confirmPassword: "",
   });
   const [errors, setErrors] = useState({});
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const isSignIn = searchParams.get("mode") === "login";
 
   const toggleForm = () => {
-    setIsSignIn((prev) => !prev);
+    const newMode = isSignIn ? "signup" : "login";
+    const newParams = new URLSearchParams(searchParams.toString());
+    newParams.set("mode", newMode);
+    router.push(`?${newParams.toString()}`);
     setErrors({});
   };
 
@@ -87,7 +94,7 @@ const Page = ({ onClose, initialMode }) => {
             <div className="flex flex-col justify-center p-8">
               {/* Close Button */}
               <button
-                onClick={onClose}
+                onClick={""}
                 className="text-2xl absolute top-2 right-4 text-gray-500 hover:text-gray-700"
               >
                 &times;
@@ -226,7 +233,7 @@ const Page = ({ onClose, initialMode }) => {
             <div className="flex flex-col justify-center p-8">
               {/* Close Button */}
               <button
-                onClick={onClose}
+                onClick={""}
                 className="text-2xl absolute top-2 right-4 text-gray-500 hover:text-gray-700"
               >
                 &times;
