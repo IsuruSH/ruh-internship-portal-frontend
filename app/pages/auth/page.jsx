@@ -112,7 +112,7 @@ const Page = ({}) => {
       // Handle successful response
       if (response.status == 200) {
         if (isSignIn) {
-          router.push("/dashboard");
+          router.push("/student-dashboard");
         } else {
           router.push("/pages/auth?mode=login");
         }
