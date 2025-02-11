@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "../styles/header.module.css";
 import { useState } from "react";
-import Page from "../pages/login/page";
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,14 +50,14 @@ const Header = () => {
           </ul>
           <div className="flex space-x-6">
             <Link
-              href={"pages/auth?mode=login"}
+              href={"/pages/auth?mode=login"}
               className="max-w-xs px-4 py-2 border border-yellow-500 text-yellow-500 rounded"
             >
               Login
             </Link>
 
             <Link
-              href={"pages/auth?mode=signup"}
+              href={"/pages/auth?mode=signup"}
               className="max-w-xs px-4 py-2 bg-yellow-500 text-black rounded"
             >
               Sign Up

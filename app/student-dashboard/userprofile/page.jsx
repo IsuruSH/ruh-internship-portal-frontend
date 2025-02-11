@@ -1,12 +1,10 @@
 import React from "react";
-import Sidebar from "../../components/admin-dashboard/layouts/Sidebar";
-import Header from "../../components/admin-dashboard/layouts/Header";
+import UpdateStudentProile from "../../components/admin-dashboard/UpdateStudentProfile";
 
 const page = () => {
   return (
     <div>
-      <Header />
-      <Sidebar />
+      <UpdateStudentProile />
     </div>
   );
 };
