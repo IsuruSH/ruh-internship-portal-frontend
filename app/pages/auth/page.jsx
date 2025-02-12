@@ -107,7 +107,7 @@ const Page = ({}) => {
 
       // Make API call
       const response = await api.post(endpoint, payload);
-      console.log(response);
+      //console.log(response);
 
       // Handle successful response
       if (response.status == 200) {
@@ -262,6 +262,7 @@ const Page = ({}) => {
               <motion.div
                 key="signinImage"
                 initial={{ opacity: 0, x: -50 }}
+                // initial={{ x: isSignIn ? 100 : -100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 50 }}
                 transition={{ duration: 0.3 }}
