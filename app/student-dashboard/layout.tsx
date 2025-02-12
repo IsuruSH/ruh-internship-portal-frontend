@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
-import Header from "../components/admin-dashboard/layouts/Header";
-import Sidebar from "../components/admin-dashboard/layouts/Sidebar";
+import Header from "../components/student-dashboard/layouts/Header";
+import Sidebar from "../components/student-dashboard/layouts/Sidebar";
 import api from "../lib/axios";
 import { UserProvider } from "../student-dashboard/context/UserContext";
 import { cookies } from "next/headers";
@@ -46,18 +46,14 @@ export default async function RootLayout({
   const user = await getUserData();
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <UserProvider user={user}>
-          <div className="min-h-screen">
-            <Header />
-            <Sidebar />
-            <main className="pt-16 pl-64 p-8 min-h-screen">{children}</main>
-          </div>
-        </UserProvider>
-      </body>
-    </html>
+    <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <UserProvider user={user}>
+        <div className="min-h-screen">
+          <Header />
+          <Sidebar />
+          <main className="pt-16 pl-64 p-8 min-h-screen">{children}</main>
+        </div>
+      </UserProvider>
+    </div>
   );
 }

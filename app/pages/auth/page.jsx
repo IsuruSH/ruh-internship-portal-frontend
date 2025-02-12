@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../lib/axios";
+import toast from "react-hot-toast";
 
 const Page = ({}) => {
   // const [isSignIn, setIsSignIn] = useState();
@@ -78,6 +79,7 @@ const Page = ({}) => {
     e.preventDefault();
     setLoading(true);
     setServerError("");
+
     let isValid;
     // if (isSignIn) {
     //   isValid = validateSignIn(formData);
@@ -111,6 +113,7 @@ const Page = ({}) => {
 
       // Handle successful response
       if (response.status == 200) {
+        toast.success(response.data.message);
         if (isSignIn) {
           router.push("/student-dashboard");
         } else {
@@ -118,6 +121,7 @@ const Page = ({}) => {
         }
       }
     } catch (error) {
+      toast.error("Error occurred. Please try again.");
       setServerError(error.message);
       console.error("API Error:", error);
     } finally {

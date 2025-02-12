@@ -6,6 +6,7 @@ type UserContextType = {
   id: string;
   name: string;
   email: string;
+  student_id: string;
   // Add other user fields
 } | null;
 

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../lib/axios";
 import { useUser } from "./context/UserContext";
-import UpdateStudentProfile from "../components/admin-dashboard/UpdateStudentProfile";
+import UpdateStudentProfile from "../components/student-dashboard/UpdateStudentProfile";
 
 const Page = () => {
   const [firstLogin, setFirstLogin] = useState(null); // Start with null to prevent premature redirection
@@ -37,12 +37,14 @@ const Page = () => {
     <>
       {isModalOpen ? (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto ">
-          <div className="bg-white p-6 rounded-lg shadow-lg my-20  ">
+          <div className="bg-white rounded-lg shadow-lg my-20  ">
             <UpdateStudentProfile />
           </div>
         </div>
       ) : (
-        <div>Loading...</div>
+        <div className="p-5">
+          <p>student dashboard</p>
+        </div>
       )}
     </>
   );
