@@ -29,20 +29,15 @@ const Page = ({}) => {
     const newParams = new URLSearchParams(searchParams.toString());
     newParams.set("mode", newMode);
     router.push(`?${newParams.toString()}`);
+    setFormData({
+      signInemail: "",
+      password: "",
+      scNumber: "",
+      email: "",
+      signUpPassword: "",
+      confirmPassword: "",
+    });
     setErrors({});
-  };
-
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    const updatedFormData = { ...formData, [id]: value };
-    setFormData(updatedFormData);
-
-    // Validate input on change
-    if (isSignIn) {
-      validateSignIn(updatedFormData);
-    } else {
-      validateSignUp(updatedFormData);
-    }
   };
 
   const validateSignIn = (data) => {
@@ -75,23 +70,26 @@ const Page = ({}) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    const updatedFormData = { ...formData, [id]: value };
+    setFormData(updatedFormData);
+
+    // Validate input on change
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setServerError("");
 
-    let isValid;
-    // if (isSignIn) {
-    //   isValid = validateSignIn(formData);
-    //   if (isValid) {
-    //     console.log("Sign In Successful", formData);
-    //   }
-    // } else {
-    //   isValid = validateSignUp(formData);
-    //   if (isValid) {
-    //     console.log("Sign Up Successful", formData);
-    //   }
-    // }
+    if (isSignIn) {
+      validateSignIn(formData);
+      return;
+    } else {
+      validateSignUp(formData);
+    }
+
     try {
       const endpoint = isSignIn
         ? "/auth/login/student/"
@@ -254,6 +252,7 @@ const Page = ({}) => {
                   <p className="text-[16px] leading-normal text-[#666] font-normal">
                     Don't have an account?{" "}
                     <button
+                      type="button"
                       onClick={toggleForm}
                       className="font-normal leading-normal text-[16px] text-[#1B0CC0] hover:text-blue-700 underline decoration-solid"
                     >
@@ -334,6 +333,7 @@ const Page = ({}) => {
                     <input
                       id="scNumber"
                       type="text"
+                      required
                       value={formData.scNumber}
                       onChange={handleInputChange}
                       className="w-full p-3 border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -354,6 +354,7 @@ const Page = ({}) => {
                       type="email"
                       value={formData.email}
                       onChange={handleInputChange}
+                      required
                       className="w-full p-3 border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     {errors.email && (
@@ -371,6 +372,7 @@ const Page = ({}) => {
                       id="signUpPassword"
                       type="password"
                       value={formData.signUpPassword}
+                      required
                       onChange={handleInputChange}
                       className="w-full p-3 border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -392,6 +394,7 @@ const Page = ({}) => {
                       type="password"
                       value={formData.confirmPassword}
                       onChange={handleInputChange}
+                      required
                       className="w-full p-3 border rounded-[12px] focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     {errors.confirmPassword && (
@@ -410,6 +413,7 @@ const Page = ({}) => {
                     <p className="text-[16px] leading-normal text-[#666] font-normal">
                       Already have an account?{" "}
                       <button
+                        type="button"
                         onClick={toggleForm}
                         className="font-normal leading-normal text-[16px] text-[#1B0CC0] hover:text-blue-700 underline decoration-solid"
                       >
