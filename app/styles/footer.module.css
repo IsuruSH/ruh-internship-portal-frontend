@@ -1,5 +1,5 @@
 .footerContainer {
-    @apply relative bg-no-repeat bg-cover text-white py-6 mt-8 text-lg;
+    @apply relative bg-no-repeat bg-cover text-white py-6 mt-8 text-lg mx-auto;
     background-image: url('/assets/unigray.png');
   }
 
@@ -12,7 +12,7 @@
   }
   
 .footerSection {
-    @apply flex flex-col place-items-center;
+    @apply flex flex-col place-items-center mx-1;
   }
   
 .footerGrid {
