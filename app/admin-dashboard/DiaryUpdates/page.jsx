@@ -2,8 +2,7 @@
 // src/pages/AnalyzePage.jsx
 import React from "react";
 import { FiSearch } from "react-icons/fi";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
+
 
 export default function MainContent() {
   return (

@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
 import StudentTable from '../components/StudentTable';
 import CompanyBox from '../components/CompanyBox';
 import '@fortawesome/fontawesome-free/css/all.min.css';

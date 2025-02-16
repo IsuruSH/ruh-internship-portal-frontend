@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FaEnvelope, FaPhone } from 'react-icons/fa';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
+
 
 export default function UserProfile() {  
   const [name, setName] = useState('');
