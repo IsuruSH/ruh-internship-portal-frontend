@@ -1,8 +1,8 @@
 import React from "react";
 import Image from "next/image";
-import NoticeBox from "../../components/home/NoticeBox";
 import Header from "../../layouts/Header";
 import Footer from "../../layouts/Footer";
+import Admin from "../../components/home/Adminpanel";
 
 const page = () => {
   return (
@@ -50,23 +50,23 @@ const page = () => {
           Administrative Panel
         </h2>
         <div class="flex flex-wrap justify-center gap-6">
-          <NoticeBox
-            title="Notice 1"
-            content="Details about notice 1."
-            imgSrc="/assets/notice.jpg"
-            imgAlt="Notice 1"
+          <Admin
+            title="Member 1"
+            content="Details about admin 1."
+            imgSrc="/assets/admin.jpg"
+            imgAlt="admin 1"
           />
-          <NoticeBox
-            title="Notice 2"
-            content="Details about notice 2."
-            imgSrc="/assets/notice.jpg"
-            imgAlt="Notice 2"
+          <Admin
+            title="Member 2"
+            content="Details about admin 2."
+            imgSrc="/assets/admin.jpg"
+            imgAlt="admin 2"
           />
-          <NoticeBox
-            title="Notice 3"
-            content="Details about notice 3."
-            imgSrc="/assets/notice.jpg"
-            imgAlt="Notice 3"
+          <Admin
+            title="Member 3"
+            content="Details about admin 3."
+            imgSrc="/assets/admin.jpg"
+            imgAlt="admin 3"
           />
         </div>
       </div>
