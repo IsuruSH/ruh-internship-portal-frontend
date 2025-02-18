@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import api from "../lib/axios";
 import { useUser } from "./context/UserContext";
 import UpdateStudentProfile from "../components/student-dashboard/UpdateStudentProfile";
+import SpiderWebChart from "../components/student-dashboard/layouts/SpiderWeb";
 
 const Page = () => {
   const [firstLogin, setFirstLogin] = useState(null); // Start with null to prevent premature redirection
@@ -44,6 +45,7 @@ const Page = () => {
       ) : (
         <div className="p-5">
           <p>student dashboard</p>
+          <SpiderWebChart/>
           
         </div>
       )}

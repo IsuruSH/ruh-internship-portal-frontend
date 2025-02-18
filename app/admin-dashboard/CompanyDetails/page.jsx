@@ -22,9 +22,9 @@ const InternshipDashboard = () => {
   );
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4 ">
+    <div className="flex-grow p-8 overflow-y-auto mt-16 ml-[250px]">
       <h1 className="text-2xl font-bold mb-4 text-center">COMPANY DETAILS</h1>
-      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+      <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="search-section flex items-center mb-4 space-x-4 justify-between">
           <div className="flex items-center space-x-2 flex-1">
             <input
@@ -32,9 +32,9 @@ const InternshipDashboard = () => {
               placeholder="Search Interns..."
               value={searchTerm}
               onChange={handleSearch}
-              className="border rounded p-2 w-1/3 h-10"
+              className="border rounded p-2 w-1/4 h-10"
             />
-            <button className="bg-[#0F1D2F] text-white p-2 rounded-lg h-10 w-12 flex items-center justify-center hover:bg-blue-700">
+            <button className="bg-gray-800 text-white p-2 rounded h-10 w-auto flex items-center">
               <FaSearch />
             </button>
           </div>
@@ -43,7 +43,7 @@ const InternshipDashboard = () => {
             <button className="mr-4 py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">Edit</button>
             <button
               className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600"
-              onClick={() => router.push('/AddComForm')}
+              onClick={() => router.push('/add-company')}
             >
               + Add Company
             </button>
