@@ -1,9 +1,13 @@
+
 "use client";
+import { FaSearch } from 'react-icons/fa';
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Sidebar from "../components/Sidebar";
 import { FaSearch } from "react-icons/fa";
+
 
 const InternshipDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -19,10 +23,7 @@ const InternshipDashboard = () => {
   );
 
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
+    
         <div className="flex-grow p-8 overflow-y-auto mt-16 ml-[250px]">
           <h1 className="text-2xl font-bold mb-4 text-center">
             SUPERVISOR FEEDBACKS
@@ -74,8 +75,7 @@ const InternshipDashboard = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      
   );
 };
 
