@@ -44,9 +44,7 @@ const Page = () => {
         </div>
       ) : (
         <div className="p-5">
-          <p>student dashboard</p>
-          <SpiderWebChart/>
-          
+          <SpiderWebChart />
         </div>
       )}
     </>
