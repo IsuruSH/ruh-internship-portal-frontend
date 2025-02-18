@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import CompanyBox from "../../components/admin-dashboard/layouts/CompanyBox";
+import CompaniesList from "../../components/admin-dashboard/layouts/CompanyList";
 import StudentTable from "../../components/admin-dashboard/layouts/StudentTable";
+
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -35,19 +36,18 @@ export default function Main() {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="p-4">
-        <div className="grid grid-cols-3 gap-4">
-          {companies.map((company) => (
-            <CompanyBox
-              key={company.id}
-              company={company}
-              students={students}
-              setStudents={setStudents}
-              companies={companies}
-              setCompanies={setCompanies}
-            />
-          ))}
+        {/* Scrollable Company List */}
+        <CompaniesList
+          companies={companies}
+          students={students}
+          setStudents={setStudents}
+          setCompanies={setCompanies}
+        />
+
+        {/* Student Table Below */}
+        <div className="mt-4">
+          <StudentTable students={students} setStudents={setStudents} />
         </div>
-        <StudentTable students={students} setStudents={setStudents} />
       </div>
     </DndProvider>
   );
