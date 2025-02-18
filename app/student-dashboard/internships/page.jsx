@@ -1,4 +1,3 @@
-// pages/internships.js
 "use client";
 import { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -11,9 +10,19 @@ const InternshipPage = () => {
   // Fetching internship data from the server
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api/internships");
-      const data = await response.json();
-      setInternships(data);
+      // Simulating API response with dummy data
+      const dummyData = [
+        { company: "Google", designation: "Software Engineer Intern", timePeriod: "3 Months" },
+        { company: "Microsoft", designation: "Data Analyst Intern", timePeriod: "6 Months" },
+        { company: "Amazon", designation: "Web Developer Intern", timePeriod: "4 Months" },
+        { company: "Facebook", designation: "UI/UX Designer Intern", timePeriod: "3 Months" },
+        { company: "Netflix", designation: "Machine Learning Intern", timePeriod: "5 Months" },
+      ];
+
+      // Simulating a server response delay
+      setTimeout(() => {
+        setInternships(dummyData);
+      }, 1000);
     };
     fetchData();
   }, []);
@@ -30,14 +39,14 @@ const InternshipPage = () => {
   // Handler for search form submission
   const handleSearch = (e) => {
     e.preventDefault();
-    // The filter logic is already applied in the filteredInternships variable
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-8 ">
+    <div className="flex-1 overflow-y-auto p-8">
       <h1 className="text-2xl font-bold mb-4 text-center">INTERNSHIPS</h1>
       <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="flex gap-4 mb-4">
+          {/* Search by Company */}
           <form onSubmit={handleSearch} className="flex items-center gap-2">
             <span className="text-gray-700">Company:</span>
             <div className="flex items-center border border-gray-300 rounded px-2">
@@ -50,13 +59,12 @@ const InternshipPage = () => {
                 className="flex-1 p-2 focus:outline-none"
               />
             </div>
-            <button
-              type="submit"
-              className="p-2 bg-[#1E2A30] text-white rounded"
-            >
+            <button type="submit" className="p-2 bg-[#1E2A30] text-white rounded">
               Search
             </button>
           </form>
+
+          {/* Search by Designation */}
           <form onSubmit={handleSearch} className="flex items-center gap-2">
             <span className="text-gray-700">Designation:</span>
             <div className="flex items-center border border-gray-300 rounded px-2">
@@ -69,42 +77,37 @@ const InternshipPage = () => {
                 className="flex-1 p-2 focus:outline-none"
               />
             </div>
-            <button
-              type="submit"
-              className="p-2 bg-[#1E2A30] text-white rounded"
-            >
+            <button type="submit" className="p-2 bg-[#1E2A30] text-white rounded">
               Search
             </button>
           </form>
         </div>
+
+        {/* Internships Table */}
         <table className="w-full border border-collapse">
           <thead>
             <tr>
               <th className="border p-2 text-center bg-gray-200">Company</th>
-              <th className="border p-2 text-center bg-gray-200">
-                Designation
-              </th>
-              <th className="border p-2 text-center bg-gray-200">
-                Time period
-              </th>
+              <th className="border p-2 text-center bg-gray-200">Designation</th>
+              <th className="border p-2 text-center bg-gray-200">Time Period</th>
             </tr>
           </thead>
           <tbody>
-            {/* Adding rows with decreased height */}
-            <tr style={{ height: "40px" }}>
-              <td className="border p-2"></td>
-              <td className="border p-2"></td>
-              <td className="border p-2"></td>
-            </tr>
-
-            {/* Displaying filtered internships */}
-            {filteredInternships.map((internship, index) => (
-              <tr key={index} style={{ height: "40px" }}>
-                <td className="border p-2">{internship.company}</td>
-                <td className="border p-2">{internship.designation}</td>
-                <td className="border p-2">{internship.timePeriod}</td>
+            {filteredInternships.length > 0 ? (
+              filteredInternships.map((internship, index) => (
+                <tr key={index} className="h-10">
+                  <td className="border p-2">{internship.company}</td>
+                  <td className="border p-2">{internship.designation}</td>
+                  <td className="border p-2">{internship.timePeriod}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="3" className="border p-4 text-center text-gray-500">
+                  No internships found
+                </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

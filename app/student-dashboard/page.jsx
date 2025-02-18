@@ -44,6 +44,7 @@ const Page = () => {
       ) : (
         <div className="p-5">
           <p>student dashboard</p>
+          
         </div>
       )}
     </>

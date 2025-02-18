@@ -29,7 +29,7 @@ export default function Header() {
           <img src="/assets/profile.jpg" alt="Profile" width={40} height={40} />
         </div>
         <span className="text-white text-lg font-medium">
-          {user.student_id}
+          
         </span>
       </div>
       <div className="flex items-center gap-6">
