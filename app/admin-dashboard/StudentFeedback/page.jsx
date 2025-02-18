@@ -21,9 +21,9 @@ const InternshipDashboard = () => {
   );
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mt-16 ml-[250px]">
+    <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
       <h1 className="text-2xl font-bold mb-4 text-center">STUDENT FEEDBACKS</h1>
-      <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="search-section flex items-center mb-4 space-x-4 justify-between">
           <div className="flex items-center space-x-2 flex-1">
             <input
