@@ -83,12 +83,7 @@ const Page = ({}) => {
     setLoading(true);
     setServerError("");
 
-    if (isSignIn) {
-      validateSignIn(formData);
-      return;
-    } else {
-      validateSignUp(formData);
-    }
+    
 
     try {
       const endpoint = isSignIn
@@ -129,9 +124,9 @@ const Page = ({}) => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-transparent">
-      <div className="bg-white text-black rounded-[24px] shadow-lg flex w-[900px] h-[640px] relative">
+      <div className="bg-white text-black rounded-[12px] shadow-lg flex w-[850px] h-[600px] relative">
         {/* Left Section */}
-        <div className="w-1/2 p-4 relative rounded-l-lg overflow-hidden">
+        <div className="w-1/2 p-3 relative rounded-l-lg overflow-hidden">
           <AnimatePresence mode="wait">
             {isSignIn ? (
               <motion.div
