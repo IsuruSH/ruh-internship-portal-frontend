@@ -65,7 +65,7 @@ export default function Sidebar() {
         label: "Supervisor Feedbacks",
     },
     {
-        href: "/admin-dashboard/ DiaryUpdates",
+        href: "/admin-dashboard/DiaryUpdates",
         icon: <FaJournalWhills />,
         label: "Diary Updates",
       },
