@@ -1,5 +1,7 @@
-"use client";
+
 import React, { useState } from 'react';
+import Header from "../components/Header";
+import Sidebar from "../components/Sidebar";
 
 const Preferences = () => {
   const [preferences, setPreferences] = useState(['1st Preference']);
@@ -13,10 +15,6 @@ const Preferences = () => {
   };
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mt-16 ml-64">
-          <h1 className="text-2xl font-bold mb-4 text-center">PREFERENCE UPDATE</h1>
-          <div className="bg-slate-50 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto"></div>
-    
     <div className="p-8">
       <h1 className="text-xl mb-4">Indicate how many choices the student has.</h1>
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
@@ -41,8 +39,20 @@ const Preferences = () => {
         </button>
       </div>
     </div>
-    </div>
   );
 };
 
-export default Preferences;
+export default function MainContent() {
+  return (
+    <>
+      <Header />
+      <Sidebar />
+      <div className="flex-grow p-8 overflow-y-auto mt-16 ml-64">
+        <h1 className="text-2xl font-bold mb-4 text-center">PREFERENCE UPDATE</h1>
+        <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+          <Preferences />
+        </div>
+      </div>
+    </>
+  );
+}
