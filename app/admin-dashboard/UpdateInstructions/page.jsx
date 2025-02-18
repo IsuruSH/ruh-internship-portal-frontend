@@ -5,9 +5,9 @@ import React from "react";
 
 export default function UpdateInstructions() {
   return (
-        <div className="flex-grow p-8 overflow-y-auto mt-16 ml-64">
+        <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
           <h1 className="text-2xl font-bold mb-4 text-center">UPDATE INSTRUCTIONS</h1>
-          <div className="bg-slate-50 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+          <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
             <div className="mb-6">
               <label htmlFor="note" className="block text-base font-medium mb-2">Feedback</label>
               <textarea
