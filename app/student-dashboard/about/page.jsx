@@ -4,22 +4,24 @@ import { useState } from "react";
 import { FaEnvelope, FaPhone, FaCalendarAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import saveinternshipdetails from "../../api/internshipapi.js";
 
 export default function AboutInternship() {
   const [scNumber, setScNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [company, setCompany] = useState("");
   const [designation, setDesignation] = useState("");
-  const [appointmentLetter, setAppointmentLetter] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [appointmentLetter, setAppointmentLetter] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [supervisorName, setSupervisorName] = useState("");
+
 
   const handleClearForm = () => {
     setScNumber("");
     setEmail("");
-    setPhone("");
+    setPhoneNumber("");
     setCompany("");
     setDesignation("");
     setAppointmentLetter(null);
@@ -28,20 +30,24 @@ export default function AboutInternship() {
     setSupervisorName("");
   };
 
-  const handleSaveChanges = () => {
-    const formData = {
-      scNumber,
+  const handleSaveChanges = async (e) => {
+    e.preventDefault();
+
+    const internshipData = {
+      sc_number: scNumber,
       email,
-      phone,
+      phoneNumber: phoneNumber,
       company,
       designation,
-      appointmentLetter,
-      startDate,
-      endDate,
-      supervisorName,
+      appointment_letter_pdf: appointmentLetter,
+      start_date: startDate,
+      end_date: endDate,
+      supervisor_name: supervisorName,
     };
 
-    console.log("Form data saved:", formData);
+    saveinternshipdetails(internshipData);
+    console.log("Form data saved:", internshipData);
+
   };
 
   return (
@@ -90,8 +96,8 @@ export default function AboutInternship() {
               <input
                 type="tel"
                 id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
                 className="w-full p-2 border-0 ml-2"
               />
             </div>
