@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import CompanyBox from "../../components/admin-dashboard/layouts/CompanyBox";
-import StudentTable from "../../components/admin-dashboard/layouts/StudentTable";
+import StudentTable from "../../components/admin-dashboard/layouts/Studenttable";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -35,9 +35,12 @@ export default function Main() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="p-4">
+      <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">SELECT INTERNSHIPS</h1>
+        <div className="mt-6 p-4 border rounded-lg shadow-lg bg-white">
         <div className="grid grid-cols-3 gap-4">
           {companies.map((company) => (
+            
             <CompanyBox
               key={company.id}
               company={company}
@@ -46,7 +49,9 @@ export default function Main() {
               companies={companies}
               setCompanies={setCompanies}
             />
+            
           ))}
+        </div>
         </div>
         <StudentTable students={students} setStudents={setStudents} />
       </div>
