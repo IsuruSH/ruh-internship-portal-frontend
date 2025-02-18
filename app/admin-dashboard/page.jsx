@@ -7,7 +7,7 @@ export default function MainContent() {
   return (
     <>
       <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
-        <h1 className="text-2xl font-bold mb-4 text-center">ANALYZE</h1>
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">ANALYZE</h1>
         <div>
           <div className="flex justify-between">
             <BarChart />

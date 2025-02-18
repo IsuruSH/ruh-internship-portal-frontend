@@ -1,121 +1,103 @@
-// StudentTable.jsx
-import React, { useState } from 'react';
+"use client";
 
+import { useState } from "react";
+import { useDrag } from "react-dnd";
+import { FaSort, FaSearch } from "react-icons/fa";
 
-const StudentTable = () => {
-  // States for search fields, sort order, and dropdown visibility
-  const [searchDesignation, setSearchDesignation] = useState('');
-  const [searchCompany, setSearchCompany] = useState('');
-  const [sortOrder, setSortOrder] = useState('asc');
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+export default function StudentTable({ students, setStudents }) {
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [searchDesignation, setSearchDesignation] = useState("");
+  const [searchCompany, setSearchCompany] = useState("");
 
-  // Handle search button click
-  const handleSearch = () => {
-    // Implement search logic here
+  // Toggle Sorting Order
+  const toggleSort = () => {
+    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newSortOrder);
+
+    setStudents([...students].sort((a, b) => 
+      newSortOrder === "asc" ? a.gpa - b.gpa : b.gpa - a.gpa
+    ));
   };
 
-  // Handle sort order change
-  const handleSortChange = (order) => {
-    setSortOrder(order);
-    setDropdownVisible(false);
-    // Implement sorting logic here
-  };
-
-  // Toggle dropdown visibility
-  const toggleDropdown = () => {
-    setDropdownVisible(!dropdownVisible);
-  };
+  // Filter Students by Designation and Company
+  const filteredStudents = students.filter(student => 
+    student.designation.toLowerCase().includes(searchDesignation.toLowerCase()) &&
+    student.company.toLowerCase().includes(searchCompany.toLowerCase())
+  );
 
   return (
-    <div className="student-table border rounded p-4 m-2 bg-white shadow-lg">
+    <div className="mt-6 p-4 border rounded-lg shadow-lg bg-white">
+      <h2 className="font-bold text-lg mb-4">Student Details</h2>
 
-        {/* Table title */}
-      <div className="text-center font-bold text-xl text-gray-800 mb-4">
-        Student details<br></br>
-      </div>
-
-      {/* Search section */}
-      <div className="search-section flex items-center mb-4 space-x-4 justify-between">
-        <div className="flex items-center space-x-2 flex-1">
-          <label className="text-gray-700">Designation:</label>
+      {/* Search Filters */}
+      <div className="flex space-x-4 mb-4">
+        <div className="relative w-1/2">
+          <FaSearch className="absolute left-3 top-3 text-gray-500" />
           <input 
             type="text" 
-            value={searchDesignation} 
-            onChange={(e) => setSearchDesignation(e.target.value)} 
-            placeholder="Search by designation" 
-            className="border rounded p-2 w-full"
+            placeholder="Search by Designation" 
+            className="w-full pl-10 p-2 border rounded-lg"
+            value={searchDesignation}
+            onChange={(e) => setSearchDesignation(e.target.value)}
           />
         </div>
-        <button onClick={handleSearch} className="bg-gray-800 text-white p-2 rounded">
-          Search
-        </button>
-        <div className="flex items-center space-x-2 flex-1">
-          <label className="text-gray-700">Company:</label>
+        <div className="relative w-1/2">
+          <FaSearch className="absolute left-3 top-3 text-gray-500" />
           <input 
             type="text" 
-            value={searchCompany} 
-            onChange={(e) => setSearchCompany(e.target.value)} 
-            placeholder="Search by company" 
-            className="border rounded p-2 w-full"
+            placeholder="Search by Company" 
+            className="w-full pl-10 p-2 border rounded-lg"
+            value={searchCompany}
+            onChange={(e) => setSearchCompany(e.target.value)}
           />
         </div>
-        <button onClick={handleSearch} className="bg-gray-800 text-white p-2 rounded">
-          Search
-        </button>
       </div>
-      
-      
 
-      {/* Student table */}
-      <table className="min-w-full bg-gray-50">
+      {/* Student Table */}
+      <table className="w-full border-collapse border">
         <thead>
-          <tr className="bg-gray-200">
-            <th className="border px-4 py-2 bg-gray-300">Name</th>
-            <th className="border px-4 py-2 bg-gray-300">SC Number</th>
-            <th className="border px-4 py-2 bg-gray-300">Designation</th>
-            <th className="border px-4 py-2 bg-gray-300">Email</th>
-            <th className="border px-4 py-2 bg-gray-300 relative">
+          <tr className="bg-gray-200 text-left">
+            <th className="border p-2">Name</th>
+            <th className="border p-2">SC Number</th>
+            <th className="border p-2">Designation</th>
+            <th className="border p-2">Email</th>
+            <th className="border p-2 flex justify-between items-center">
               GPA
-              <button onClick={toggleDropdown} className="ml-2 text-gray-600">
-                <i className="fas fa-sort"></i> {/* FontAwesome sorting icon */}
+              <button onClick={toggleSort} className="ml-2">
+                <FaSort className="text-gray-600 cursor-pointer" />
               </button>
-              {/* Dropdown menu */}
-              {dropdownVisible && (
-                <div className="absolute top-full mt-2 w-28 bg-white border rounded shadow-lg">
-                  <button 
-                    onClick={() => handleSortChange('asc')} 
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                    Ascending
-                  </button>
-                  <button 
-                    onClick={() => handleSortChange('desc')} 
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                    Descending
-                  </button>
-                </div>
-              )}
             </th>
-            <th className="border px-4 py-2 bg-gray-300">Company</th>
-            <th className="border px-4 py-2 bg-gray-300">CV</th>
-            <th className="border px-4 py-2 bg-gray-300">Time</th>
+            <th className="border p-2">Company</th>
           </tr>
         </thead>
         <tbody>
-         {/* Render student rows here */}
-  <tr className="bg-gray-100">
-  <td className="border px-4 py-2">ABC</td>
-  <td className="border px-4 py-2"></td>
-  <td className="border px-4 py-2"></td>
-  <td className="border px-4 py-2"></td>
-  <td className="border px-4 py-2"></td>
-  <td className="border px-4 py-2"></td>
-  <td className="border px-4 py-2"></td>
-  <td className="border px-4 py-2"></td>
-</tr>
-</tbody>
-</table>
-</div>
-);
-};
+          {filteredStudents.map((student) => (
+            <DraggableStudent key={student.id} student={student} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
-export default StudentTable;
+// Draggable Student Component
+function DraggableStudent({ student }) {
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: "STUDENT",
+    item: { id: student.id },
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }));
+
+  return (
+    <tr ref={drag} className={`border ${isDragging ? "opacity-50" : ""}`}>
+      <td className="border p-2">{student.name}</td>
+      <td className="border p-2">{student.scNumber}</td>
+      <td className="border p-2">{student.designation}</td>
+      <td className="border p-2">{student.email}</td>
+      <td className="border p-2">{student.gpa}</td>
+      <td className="border p-2">{student.company || "Unassigned"}</td>
+    </tr>
+  );
+}
