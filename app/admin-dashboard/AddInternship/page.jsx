@@ -1,78 +1,71 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import { FaSearch } from 'react-icons/fa';
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { FaSearch } from "react-icons/fa";
 
 const InternshipDashboard = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [interns, setInterns] = useState([]);
-  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [interns, setInterns] = useState([
+    { no: 1, companyname: "ABC Corp", designation: "Software Intern", time: "6 months" },
+    { no: 2, companyname: "XYZ Ltd", designation: "Data Analyst", time: "3 months" },
+    { no: 3, companyname: "Tech Innovations", designation: "Frontend Developer", time: "1 year" }
+  ]);
+  const router = useRouter();
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredInterns = interns.filter(intern =>
-    intern.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredInterns = interns.filter((intern) =>
+    intern.companyname.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
-  const addIntern = (intern) => { setInterns([...interns, { ...intern, no: interns.length + 1 }]);
-   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <div className="flex-grow p-8 overflow-y-auto mt-16 ml-[250px]">
-          <h1 className="text-2xl font-bold mb-4 text-center">ADD INTERNSHIPS</h1>
-          <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
-          <div className="search-section flex items-center mb-4 space-x-4 justify-between">
-            <div className="flex items-center space-x-2 flex-1">
-              <input
-                type="text"
-                placeholder="Search Interns..."
-                value={searchTerm}
-                onChange={handleSearch}
-                 className="border rounded p-2 w-1/4 h-10"
-              />
-              <button onClick={handleSearch} className="bg-gray-800 text-white p-2 rounded h-10 w-auto flex items-center">
-                <FaSearch />
-              </button>
-            </div>
-            <div className="flex justify-end">
-              <button
-                className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600"
-                onClick={() => navigate('/add-intern')}
-              >
-                + Add Intern
-              </button>
-            </div>
+    <div className="flex flex-col items-center p-8 overflow-y-auto mt-16">
+      <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Add Internships</h1>
+      <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-4xl">
+        <div className="flex items-center mb-6 space-x-4 justify-between">
+          <div className="flex items-center space-x-2 w-full">
+            <input
+              type="text"
+              placeholder="Search Company Name"
+              value={searchTerm}
+              onChange={handleSearch}
+              className="border rounded-lg p-2 w-full h-10 focus:ring-2 focus:ring-blue-400 outline-none"
+            />
+            <button className="bg-blue-600 text-white p-2 rounded-lg h-10 w-12 flex items-center justify-center hover:bg-blue-700">
+              <FaSearch />
+            </button>
           </div>
-          <div className="intern-table">
-            <table className="min-w-full bg-gray-50">
-              <thead>
-                <tr className="bg-gray-200">
-                  <th className="border px-4 py-2 bg-gray-300">No</th>
-                  <th className="border px-4 py-2 bg-gray-300">Company Name</th>
-                  <th className="border px-4 py-2 bg-gray-300">Designation</th>
-                  <th className="border px-4 py-2 bg-gray-300">Time Period</th>
+          <button
+            className="py-2 px-6 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            onClick={() => router.push("/add-intern")}
+          >
+            + Add Intern
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
+            <thead>
+              <tr className="bg-gray-100 border-b">
+                <th className="border px-4 py-3 text-left text-gray-600">No</th>
+                <th className="border px-4 py-3 text-left text-gray-600">Company Name</th>
+                <th className="border px-4 py-3 text-left text-gray-600">Designation</th>
+                <th className="border px-4 py-3 text-left text-gray-600">Time Period</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredInterns.map((intern) => (
+                <tr key={intern.no} className="border-b hover:bg-gray-50">
+                  <td className="px-4 py-3">{intern.no}</td>
+                  <td className="px-4 py-3">{intern.companyname}</td>
+                  <td className="px-4 py-3">{intern.designation}</td>
+                  <td className="px-4 py-3">{intern.time}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {filteredInterns.map((intern, index) => (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{intern.companyname}</td>
-                    <td>{intern.designation}</td>
-                    <td>{intern.time}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
