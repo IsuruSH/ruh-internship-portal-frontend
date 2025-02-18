@@ -12,11 +12,31 @@ const InternshipPage = () => {
     const fetchData = async () => {
       // Simulating API response with dummy data
       const dummyData = [
-        { company: "Google", designation: "Software Engineer Intern", timePeriod: "3 Months" },
-        { company: "Microsoft", designation: "Data Analyst Intern", timePeriod: "6 Months" },
-        { company: "Amazon", designation: "Web Developer Intern", timePeriod: "4 Months" },
-        { company: "Facebook", designation: "UI/UX Designer Intern", timePeriod: "3 Months" },
-        { company: "Netflix", designation: "Machine Learning Intern", timePeriod: "5 Months" },
+        {
+          company: "Google",
+          designation: "Software Engineer Intern",
+          timePeriod: "3 Months",
+        },
+        {
+          company: "Microsoft",
+          designation: "Data Analyst Intern",
+          timePeriod: "6 Months",
+        },
+        {
+          company: "Amazon",
+          designation: "Web Developer Intern",
+          timePeriod: "4 Months",
+        },
+        {
+          company: "Facebook",
+          designation: "UI/UX Designer Intern",
+          timePeriod: "3 Months",
+        },
+        {
+          company: "Netflix",
+          designation: "Machine Learning Intern",
+          timePeriod: "5 Months",
+        },
       ];
 
       // Simulating a server response delay
@@ -59,7 +79,10 @@ const InternshipPage = () => {
                 className="flex-1 p-2 focus:outline-none"
               />
             </div>
-            <button type="submit" className="p-2 bg-[#1E2A30] text-white rounded">
+            <button
+              type="submit"
+              className="p-2 bg-[#1E2A30] text-white rounded"
+            >
               Search
             </button>
           </form>
@@ -77,7 +100,10 @@ const InternshipPage = () => {
                 className="flex-1 p-2 focus:outline-none"
               />
             </div>
-            <button type="submit" className="p-2 bg-[#1E2A30] text-white rounded">
+            <button
+              type="submit"
+              className="p-2 bg-[#1E2A30] text-white rounded"
+            >
               Search
             </button>
           </form>
@@ -88,8 +114,12 @@ const InternshipPage = () => {
           <thead>
             <tr>
               <th className="border p-2 text-center bg-gray-200">Company</th>
-              <th className="border p-2 text-center bg-gray-200">Designation</th>
-              <th className="border p-2 text-center bg-gray-200">Time Period</th>
+              <th className="border p-2 text-center bg-gray-200">
+                Designation
+              </th>
+              <th className="border p-2 text-center bg-gray-200">
+                Time Period
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -103,7 +133,10 @@ const InternshipPage = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="border p-4 text-center text-gray-500">
+                <td
+                  colSpan="3"
+                  className="border p-4 text-center text-gray-500"
+                >
                   No internships found
                 </td>
               </tr>
