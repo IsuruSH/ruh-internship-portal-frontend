@@ -83,12 +83,7 @@ const Page = ({}) => {
     setLoading(true);
     setServerError("");
 
-    if (isSignIn) {
-      validateSignIn(formData);
-      return;
-    } else {
-      validateSignUp(formData);
-    }
+    
 
     try {
       const endpoint = isSignIn
@@ -104,6 +99,7 @@ const Page = ({}) => {
             email: formData.email,
             password: formData.signUpPassword,
           };
+
 
       // Make API call
       const response = await api.post(endpoint, payload);

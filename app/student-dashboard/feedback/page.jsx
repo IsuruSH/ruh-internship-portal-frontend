@@ -1,11 +1,27 @@
 "use client";
-
+import savefeedback from '../../api/feedbackapi.js'; // Default import
 import { useState } from "react";
+
+
 
 export default function Feedback() {
   const [scNumber, setScNumber] = useState("");
   const [company, setCompany] = useState("");
   const [feedback, setFeedback] = useState("");
+
+  const feedbackData = {
+    sc_number: scNumber,
+    company_name: company,
+    feedback: feedback,
+  };
+
+
+const handleSaveChanges =  () => {
+
+  console.log(feedbackData);
+  savefeedback(feedbackData); // Using the default import
+}
+
 
   return (
     <div className="flex-1 overflow-y-auto p-8 ">
@@ -58,7 +74,10 @@ export default function Feedback() {
           ></textarea>
         </div>
         <div className="flex justify-end mb-4">
-          <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-gray-600">
+          <button
+            onClick={handleSaveChanges}
+            className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-gray-600"
+          >
             Save Changes
           </button>
         </div>
