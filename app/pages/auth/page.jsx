@@ -73,17 +73,68 @@ const Page = ({}) => {
   const handleInputChange = (e) => {
     const { id, value } = e.target;
     const updatedFormData = { ...formData, [id]: value };
+
+    // Update form state
     setFormData(updatedFormData);
 
-    // Validate input on change
+    // Real-time validation
+    const newErrors = { ...errors };
+
+    if (isSignIn) {
+      // Sign-in validation
+      switch (id) {
+        case "signInemail":
+          newErrors.signInemail = value ? "" : "Email is required.";
+          break;
+        case "password":
+          newErrors.password = value ? "" : "Password is required.";
+          break;
+      }
+    } else {
+      // Sign-up validation
+      switch (id) {
+        case "scNumber":
+          newErrors.scNumber = value.match(/^SC\/\d{4}\/\d{5}$/)
+            ? ""
+            : "Invalid SC Number format.";
+          break;
+        case "email":
+          newErrors.email = value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+            ? ""
+            : "Please enter a valid email address.";
+          break;
+        case "signUpPassword":
+          newErrors.signUpPassword =
+            value.length >= 8
+              ? ""
+              : "Password must be at least 8 characters long.";
+          // Validate confirm password if password changes
+          if (formData.confirmPassword) {
+            newErrors.confirmPassword =
+              value === formData.confirmPassword
+                ? ""
+                : "Passwords do not match.";
+          }
+          break;
+        case "confirmPassword":
+          newErrors.confirmPassword =
+            value === updatedFormData.signUpPassword
+              ? ""
+              : "Passwords do not match.";
+          break;
+      }
+    }
+
+    // Update errors state
+    setErrors(
+      Object.fromEntries(Object.entries(newErrors).filter(([_, v]) => v !== ""))
+    );
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setServerError("");
-
-    
 
     try {
       const endpoint = isSignIn
@@ -99,6 +150,7 @@ const Page = ({}) => {
             email: formData.email,
             password: formData.signUpPassword,
           };
+
 
       // Make API call
       const response = await api.post(endpoint, payload);
