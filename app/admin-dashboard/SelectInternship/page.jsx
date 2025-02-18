@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
-import StudentTable from '../components/StudentTable';
-import CompanyBox from '../components/CompanyBox';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+"use client";
+
+import { useState } from "react";
+import StudentTable from "../components/StudentTable";
+import CompanyBox from "../components/CompanyBox";
+//import "@fortawesome/fontawesome-free/css/all.min.css";
 
 export default function MainContent() {
   // Initial state for companies
   const [companies, setCompanies] = useState([
-    { id: 1, name: 'Company A', email: 'email@companya.com', students: [] },
-    { id: 2, name: 'Company B', email: 'email@companyb.com', students: [] },
-    { id: 3, name: 'Company C', email: 'email@companyc.com', students: [] },
-    { id: 4, name: 'Company D', email: 'email@companyd.com', students: [] },
-    { id: 5, name: 'Company E', email: 'email@companye.com', students: [] },
+    { id: 1, name: "Company A", email: "email@companya.com", students: [] },
+    { id: 2, name: "Company B", email: "email@companyb.com", students: [] },
+    { id: 3, name: "Company C", email: "email@companyc.com", students: [] },
+    { id: 4, name: "Company D", email: "email@companyd.com", students: [] },
+    { id: 5, name: "Company E", email: "email@companye.com", students: [] },
   ]);
 
   // State for the current index of visible companies
@@ -30,12 +30,6 @@ export default function MainContent() {
 
   return (
     <>
-      {/* Header Component */}
-      <Header />
-
-      {/* Sidebar Component */}
-      <Sidebar />
-
       {/* Main content area */}
       <div className="flex-grow p-8 overflow-y-auto mt-16 ml-64">
         <h1 className="text-2xl font-bold mb-4 text-center">SELECT INTERNSHIPS</h1>
