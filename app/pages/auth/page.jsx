@@ -83,12 +83,7 @@ const Page = ({}) => {
     setLoading(true);
     setServerError("");
 
-    if (isSignIn) {
-      validateSignIn(formData);
-      return;
-    } else {
-      validateSignUp(formData);
-    }
+    
 
     try {
       const endpoint = isSignIn
