@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import { FaEnvelope, FaPhone } from 'react-icons/fa';
-import Header from '../components/Header';
-import Sidebar from '../components/Sidebar';
 
 export default function UserProfile() {  
   const [name, setName] = useState('');
@@ -15,10 +13,7 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
+    
         <div className="flex-1 overflow-y-auto p-8 mt-[64px] ml-[250px]">
           <h1 className="text-2xl font-bold mb-4 text-center">Add Company Details</h1>
           <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-4xl mx-auto">
@@ -102,7 +97,6 @@ export default function UserProfile() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      
   );
 }
