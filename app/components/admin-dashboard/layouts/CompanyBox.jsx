@@ -2,6 +2,7 @@
 
 import { useDrop } from "react-dnd";
 import { useState } from "react";
+import { ScissorsIcon } from "@heroicons/react/solid"; // Importing scissors icon
 
 export default function CompanyBox({ company, students, setStudents, companies, setCompanies }) {
   const [{ isOver }, drop] = useDrop(() => ({
@@ -40,7 +41,7 @@ export default function CompanyBox({ company, students, setStudents, companies, 
   };
 
   const handleRemoveStudent = (studentId) => {
-    // Remove the student from the company's list
+    // Remove student from the company
     setCompanies((prev) =>
       prev.map((c) =>
         c.id === company.id
@@ -48,8 +49,8 @@ export default function CompanyBox({ company, students, setStudents, companies, 
           : c
       )
     );
-    
-    // Add the student back to the main student list
+
+    // Add student back to the student table
     const studentToRemove = company.students.find((s) => s.id === studentId);
     if (studentToRemove) {
       setStudents((prev) => [...prev, studentToRemove]);
@@ -57,7 +58,9 @@ export default function CompanyBox({ company, students, setStudents, companies, 
   };
 
   return (
+
     <div ref={drop} className={`p-4 border rounded-lg bg-slate-100 text-black ${isOver ? "bg-gray-400" : ""}`}>
+
       <h2 className="font-bold">{company.name}</h2>
       <div className="mt-2">
         <label className="block text-sm">Company Email</label>
@@ -75,8 +78,9 @@ export default function CompanyBox({ company, students, setStudents, companies, 
           <button
             onClick={() => handleRemoveStudent(student.id)}
             className="ml-2 p-1 bg-red-500 text-white rounded"
+            aria-label="Remove student"
           >
-            X
+            <ScissorsIcon className="w-5 h-5" />
           </button>
         </div>
       ))}
