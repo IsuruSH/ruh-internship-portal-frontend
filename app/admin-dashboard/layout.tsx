@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Student Dashboard",
+  title: "Admin Dashboard",
   description: "Manage your internship process",
 };
 
@@ -43,7 +43,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getUserData();
+  const user = await null;
 
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
