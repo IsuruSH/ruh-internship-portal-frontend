@@ -13,12 +13,12 @@ const Preferences = () => {
   };
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mt-16 ml-64">
+    <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
           <h1 className="text-2xl font-bold mb-4 text-center">PREFERENCE UPDATE</h1>
-          <div className="bg-slate-50 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto"></div>
+          
     
-    <div className="p-8">
-      <h1 className="text-xl mb-4">Indicate how many choices the student has.</h1>
+    
+      <h1 className="text-lg mb-4">Indicate how many choices the student has.</h1>
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         {preferences.map((preference, index) => (
           <div key={index} className="mb-4">
@@ -41,7 +41,7 @@ const Preferences = () => {
         </button>
       </div>
     </div>
-    </div>
+    
   );
 };
 

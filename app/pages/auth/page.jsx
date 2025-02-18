@@ -151,6 +151,7 @@ const Page = ({}) => {
             password: formData.signUpPassword,
           };
 
+
       // Make API call
       const response = await api.post(endpoint, payload);
       //console.log(response);

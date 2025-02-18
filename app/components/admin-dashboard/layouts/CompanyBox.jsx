@@ -1,49 +1,86 @@
-import React, { useState } from 'react';
+"use client";
 
-const CompanyBox = ({ company }) => {
-  // State for email input field
+import { useDrop } from "react-dnd";
+import { useState } from "react";
+
+export default function CompanyBox({ company, students, setStudents, companies, setCompanies }) {
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: "STUDENT",
+    drop: (item) => handleDrop(item.id),
+    collect: (monitor) => ({
+      isOver: !!monitor.isOver(),
+    }),
+  }));
+
+  // State for editable email
   const [email, setEmail] = useState(company.email);
 
-  // Handle email input change
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
+  const handleDrop = (studentId) => {
+    setStudents((prev) => prev.filter((s) => s.id !== studentId));
+
+    setCompanies((prev) =>
+      prev.map((c) =>
+        c.id === company.id
+          ? { ...c, students: [...c.students, students.find((s) => s.id === studentId)] }
+          : c
+      )
+    );
   };
 
-  // Function to handle sending CVs to company
-  const sendToCompany = () => {
-    // Implement email sending logic here
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    // Update company email in the parent component
+    setCompanies((prev) =>
+      prev.map((c) =>
+        c.id === company.id
+          ? { ...c, email: e.target.value }
+          : c
+      )
+    );
+  };
+
+  const handleRemoveStudent = (studentId) => {
+    // Remove the student from the company's list
+    setCompanies((prev) =>
+      prev.map((c) =>
+        c.id === company.id
+          ? { ...c, students: c.students.filter((s) => s.id !== studentId) }
+          : c
+      )
+    );
+    
+    // Add the student back to the main student list
+    const studentToRemove = company.students.find((s) => s.id === studentId);
+    if (studentToRemove) {
+      setStudents((prev) => [...prev, studentToRemove]);
+    }
   };
 
   return (
-    <div className="border rounded-lg p-4 m-2 bg-gray-200 w-64">
-      <h3 className="font-bold text-lg">{`Company Name: ${company.name}`}</h3>
-      {/* Students section with vertical scroll */}
-      <div className="overflow-y-auto h-32 mt-2">
-        {company.students.slice(0, 3).map((student) => (
-          <div key={student.id} className="bg-gray-300 p-2 my-1 rounded">
-            {`${student.name} (${student.scNumber})`}
-          </div>
-        ))}
-      </div>
-      {/* Email input field */}
+    <div ref={drop} className={`p-4 border rounded-lg bg-gray-600 text-white ${isOver ? "bg-gray-400" : ""}`}>
+      <h2 className="font-bold">{company.name}</h2>
       <div className="mt-2">
-        <label className="block text-sm">Email:</label>
+        <label className="block text-sm">Company Email</label>
         <input
-          type="text"
+          type="email"
           value={email}
           onChange={handleEmailChange}
-          className="border rounded p-2 w-full"
+          className="mt-1 p-2 rounded text-black w-full"
+          placeholder="Enter email"
         />
       </div>
-      {/* Send to Company button */}
-      <button
-        onClick={sendToCompany}
-        className="bg-gray-800 text-white p-2 mt-2 rounded w-full"
-      >
-        Send to Company
-      </button>
+      {company.students.map((student) => (
+        <div key={student.id} className="p-2 mt-2 bg-gray-800 rounded flex justify-between items-center">
+          <span>{student.name} - {student.scNumber}</span>
+          <button
+            onClick={() => handleRemoveStudent(student.id)}
+            className="ml-2 p-1 bg-red-500 text-white rounded"
+          >
+            X
+          </button>
+        </div>
+      ))}
+      <button className="mt-2 p-2 bg-blue-500 text-white rounded">Send to Company</button>
     </div>
   );
-};
-
-export default CompanyBox;
+}
