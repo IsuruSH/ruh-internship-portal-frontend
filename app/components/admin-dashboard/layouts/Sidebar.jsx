@@ -2,25 +2,25 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-    FaUser, 
-    FaFolderOpen,
-    FaBook,
-    FaClipboard,
-    FaSortNumericDown,
-    FaBullhorn, 
-    FaBuilding, 
-    FaComments, 
-    FaChalkboardTeacher, 
-    FaJournalWhills } 
-from 'react-icons/fa';
+import {
+  FaUser,
+  FaFolderOpen,
+  FaBook,
+  FaClipboard,
+  FaSortNumericDown,
+  FaBullhorn,
+  FaBuilding,
+  FaComments,
+  FaChalkboardTeacher,
+  FaJournalWhills,
+} from "react-icons/fa";
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   const links = [
     {
-      href: "/admin-dashboard/",
+      href: "/admin-dashboard",
       icon: <FaUser />,
       label: "Analyze",
     },
@@ -60,15 +60,15 @@ export default function Sidebar() {
       label: "Student Feedbacks",
     },
     {
-        href: "/admin-dashboard/SupervisorFeedback",
-        icon: <FaChalkboardTeacher />,
-        label: "Supervisor Feedbacks",
+      href: "/admin-dashboard/SupervisorFeedback",
+      icon: <FaChalkboardTeacher />,
+      label: "Supervisor Feedbacks",
     },
     {
-        href: "/admin-dashboard/DiaryUpdates",
-        icon: <FaJournalWhills />,
-        label: "Diary Updates",
-      },
+      href: "/admin-dashboard/DiaryUpdates",
+      icon: <FaJournalWhills />,
+      label: "Diary Updates",
+    },
   ];
 
   return (
