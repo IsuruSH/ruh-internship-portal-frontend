@@ -2,6 +2,7 @@
 
 import { useDrop } from "react-dnd";
 import { useState } from "react";
+import { HiMiniXMark } from "react-icons/hi2";
 
 export default function CompanyBox({ company, students, setStudents, companies, setCompanies }) {
   const [{ isOver }, drop] = useDrop(() => ({
@@ -76,7 +77,7 @@ export default function CompanyBox({ company, students, setStudents, companies, 
             onClick={() => handleRemoveStudent(student.id)}
             className="ml-2 p-1 bg-red-500 text-white rounded"
           >
-            X
+            <HiMiniXMark />
           </button>
         </div>
       ))}
