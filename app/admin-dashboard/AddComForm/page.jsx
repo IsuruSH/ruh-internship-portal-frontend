@@ -1,4 +1,5 @@
 // pages/user-profile.jsx
+'use client';
 import { useState } from 'react';
 import { FaEnvelope, FaPhone } from 'react-icons/fa';
 
@@ -15,9 +16,9 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-8 mt-[64px] ml-[250px]">
-      <h1 className="text-2xl font-bold mb-4 text-center">Add Company Details</h1>
-      <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-4xl mx-auto">
+    <div className="flex-1 overflow-y-auto p-8 mt-16 mx-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">ADD COMPANY DETAILS</h1>
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-4xl mx-auto">
         <div className="mb-6">
           <label htmlFor="name" className="block text-base font-medium mb-2">Company Name</label>
           <input

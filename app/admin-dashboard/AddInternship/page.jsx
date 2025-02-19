@@ -21,6 +21,7 @@ const InternshipDashboard = () => {
     intern.companyname.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+
   return (
     <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">ADD INTERNSHIPS</h1>
@@ -40,7 +41,7 @@ const InternshipDashboard = () => {
           </div>
           <button
             className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600"
-            onClick={() => router.push("/AddInternFrom")}
+            onClick={() => router.push("/admin-dashboard/AddInternForm/")}
           >
             + Add Intern
           </button>

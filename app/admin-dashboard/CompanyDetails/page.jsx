@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { FaSearch, FaTrash } from 'react-icons/fa';
 
 const InternshipDashboard = () => {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [interns, setInterns] = useState([
     { id: 1, companyName: 'Tech Corp', address: '123 Tech Street', email: 'tech@corp.com', phone: '123-456-7890', person: 'John Doe', note: 'Leading AI company' },
@@ -17,6 +19,10 @@ const InternshipDashboard = () => {
 
   const handleDelete = (indexToDelete) => {
     setInterns(interns.filter((_, index) => index !== indexToDelete));
+  };
+
+  const handleAddCompany = () => {
+    router.push('/admin-dashboard/AddComForm');
   };
 
   const filteredInterns = interns.filter((intern) =>
@@ -43,7 +49,10 @@ const InternshipDashboard = () => {
           <div className="flex justify-end space-x-2">
             <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">Save</button>
             <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">Edit</button>
-            <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">
+            <button
+              className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600"
+              onClick={handleAddCompany}
+            >
               + Add Company
             </button>
           </div>
