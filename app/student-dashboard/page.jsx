@@ -4,10 +4,9 @@ import { useRouter } from "next/navigation";
 import api from "../lib/axios";
 import { useUser } from "./context/UserContext";
 import UpdateStudentProfile from "../components/student-dashboard/UpdateStudentProfile";
-import SpiderWebChart from "../components/student-dashboard/layouts/SpiderWeb";
 
 const Page = () => {
-  const [firstLogin, setFirstLogin] = useState(null); // Start with null to prevent premature redirection
+  const [firstLogin, setFirstLogin] = useState(null);
   const [student, setStudent] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
@@ -32,19 +31,22 @@ const Page = () => {
       }
     }
     fetchData();
-  }, [user?.id, router]); // Add dependencies
+  }, [user?.id, router]); // Dependencies
+
+  // **Handle redirection separately in useEffect**
+  useEffect(() => {
+    if (firstLogin === false) {
+      router.push("/student-dashboard/userprofile");
+    }
+  }, [firstLogin, router]);
 
   return (
     <>
-      {isModalOpen ? (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto ">
-          <div className="bg-white rounded-lg shadow-lg my-20  ">
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto">
+          <div className="bg-white rounded-lg shadow-lg my-20">
             <UpdateStudentProfile />
           </div>
-        </div>
-      ) : (
-        <div className="p-5">
-          <SpiderWebChart />
         </div>
       )}
     </>
