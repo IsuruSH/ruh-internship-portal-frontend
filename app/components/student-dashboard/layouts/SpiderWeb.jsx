@@ -7,22 +7,35 @@ import { useState, useEffect } from 'react';
 // Ensure RadialLinearScale is registered properly
 ChartJS.register(RadialLinearScale, PointElement, LineElement, Tooltip, Legend);
 
+const gradeToPoints = {
+  'A+': 12, 'A': 11, 'A-': 10,
+  'B+': 9, 'B': 8, 'B-': 7,
+  'C+': 6, 'C': 5, 'C-': 4,
+  'D+': 3, 'D': 2, 'D-': 1,
+  'E': 0,
+};
+
 const SpiderWebChart = () => {
-  // Dummy student data
-  const studentData = {
-    'Data Structure and Algorithms': 85,
-    'Software Engineering': 90,
-    'Object Oriented System Development': 75,
-    'Internet Services and Web Development': 80,
-    'Internet Programming': 70,
-    'Multimedia and Video Production': 65,
-    'System Analyst & Design': 78,
-    'Project Management': 58,
-    'Data and Network Security': 72,
-    'E-commerce and Professional Practice': 50,
-    'Database Management Systems': 55,
-    'Group Projects': 79,
+  // Dummy student grade data
+  const studentGrades = {
+    'Data Structure and Algorithms': 'A',
+    'Software Engineering': 'A-',
+    'Object Oriented System Development': 'B+',
+    'Internet Services and Web Development': 'B',
+    'Internet Programming': 'C+',
+    'Multimedia and Video Production': 'C',
+    'System Analyst & Design': 'B-',
+    'Project Management': 'C-',
+    'Data and Network Security': 'B+',
+    'E-commerce and Professional Practice': 'D+',
+    'Database Management Systems': 'C',
+    'Group Projects': 'B',
   };
+
+  // Convert grades to points
+  const studentData = Object.fromEntries(
+    Object.entries(studentGrades).map(([course, grade]) => [course, gradeToPoints[grade] || 0])
+  );
 
   // Mapping course units to career fields
   const careerFields = {
@@ -30,17 +43,17 @@ const SpiderWebChart = () => {
     'Web Development': ['Internet Services and Web Development', 'Internet Programming', 'Multimedia and Video Production'],
     'Quality Assurance': ['System Analyst & Design', 'Project Management', 'Data and Network Security'],
     'Business Analysis': ['E-commerce and Professional Practice', 'Database Management Systems', 'Project Management'],
-    'Project Management': ['Project Management', 'Group Projects', 'System Analyst & Design']
+    'Project Management': ['Project Management', 'Group Projects', 'System Analyst & Design'],
   };
 
-  // Calculate average scores for each career field with fallback for missing data
+  // Calculate average scores for each career field
   const [careerScores, setCareerScores] = useState([]);
 
   useEffect(() => {
     const scores = Object.keys(careerFields).map((field) => {
       const relatedCourses = careerFields[field];
       const totalScore = relatedCourses.reduce((sum, course) => sum + (studentData?.[course] ?? 0), 0);
-      return relatedCourses.length > 0 ? totalScore / relatedCourses.length : 0;
+      return relatedCourses.length > 0 ? (totalScore / (relatedCourses.length * 12)) * 100 : 0; // Normalize to 100 scale
     });
     setCareerScores(scores);
   }, []);
