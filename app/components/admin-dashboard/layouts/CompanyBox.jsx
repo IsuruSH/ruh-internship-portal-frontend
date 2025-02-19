@@ -57,7 +57,7 @@ export default function CompanyBox({ company, students, setStudents, companies, 
   };
 
   return (
-    <div ref={drop} className={`p-4 border rounded-lg bg-gray-600 text-white ${isOver ? "bg-gray-400" : ""}`}>
+    <div ref={drop} className={`p-4 border rounded-lg bg-slate-100 text-black ${isOver ? "bg-gray-400" : ""}`}>
       <h2 className="font-bold">{company.name}</h2>
       <div className="mt-2">
         <label className="block text-sm">Company Email</label>
@@ -70,7 +70,7 @@ export default function CompanyBox({ company, students, setStudents, companies, 
         />
       </div>
       {company.students.map((student) => (
-        <div key={student.id} className="p-2 mt-2 bg-gray-800 rounded flex justify-between items-center">
+        <div key={student.id} className="p-2 mt-2 bg-slate-200 rounded flex justify-between items-center">
           <span>{student.name} - {student.scNumber}</span>
           <button
             onClick={() => handleRemoveStudent(student.id)}
@@ -80,7 +80,7 @@ export default function CompanyBox({ company, students, setStudents, companies, 
           </button>
         </div>
       ))}
-      <button className="mt-2 p-2 bg-blue-500 text-white rounded">Send to Company</button>
+      <button className="mt-2 p-2 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">Send to Company</button>
     </div>
   );
 }

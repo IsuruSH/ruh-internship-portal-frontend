@@ -64,7 +64,7 @@ const InternshipPage = () => {
   return (
     <div className="flex-1 overflow-y-auto p-8">
       <h1 className="text-2xl font-bold mb-4 text-center">INTERNSHIPS</h1>
-      <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="flex gap-4 mb-4">
           {/* Search by Company */}
           <form onSubmit={handleSearch} className="flex items-center gap-2">

@@ -33,7 +33,7 @@ const page = () => {
   return (
     <div className="flex-1 overflow-y-auto p-8 ">
       <h1 className="text-2xl font-bold mb-4 text-center">USER PROFILE</h1>
-      <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="flex items-center mb-6">
           <img src="" alt="Profile" className="rounded-full w-20 h-20 mr-6" />
           <div>
@@ -195,9 +195,9 @@ const page = () => {
           <h4 className="text-base font-semibold mb-2">GPA: 3.5</h4>
           <h4 className="text-base font-semibold mb-2">Results: </h4>
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-300">
+            <table className="min-w-full bg-white border border-gray-400">
               <thead>
-                <tr className="bg-gray-400 text-white text-center">
+                <tr className="bg-slate-400 text-black text-center">
                   <th colSpan="2" className="py-2 px-4 border">
                     Level 1
                   </th>

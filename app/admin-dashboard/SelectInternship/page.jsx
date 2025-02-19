@@ -131,14 +131,18 @@ export default function Main() {
     { id: 1, name: "Company A", email: "companyA@example.com", students: [] },
     { id: 2, name: "Company B", email: "companyB@example.com", students: [] },
     { id: 3, name: "Company C", email: "companyC@example.com", students: [] },
-    { id: 4, name: "Company D", email: "companyD@example.com", students: [] },
+    /*{ id: 4, name: "Company D", email: "companyD@example.com", students: [] },
     { id: 5, name: "Company E", email: "companyE@example.com", students: [] },
-    { id: 6, name: "Company F", email: "companyF@example.com", students: [] },
+    { id: 6, name: "Company F", email: "companyF@example.com", students: [] },*/
   ]);
 
   return (
     <DndProvider backend={HTML5Backend}>
+     
       <div className="p-4">
+      <div className="flex-grow p-8 overflow-y-auto mt-12 mx-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">SELECT INTERNSHIPS</h1>
+      <div className="mt-6 p-4 border rounded-lg shadow-lg bg-white">
         <div className="grid grid-cols-3 gap-4">
           {companies.map((company) => (
             <CompanyBox
@@ -150,6 +154,8 @@ export default function Main() {
               setCompanies={setCompanies}
             />
           ))}
+        </div>
+      </div>
         </div>
         <StudentTable students={students} setStudents={setStudents} />
       </div>

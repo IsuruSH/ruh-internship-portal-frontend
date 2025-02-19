@@ -55,7 +55,7 @@ export default function AboutInternship() {
       <h1 className="text-2xl font-bold mb-4 text-center">
         ABOUT YOUR INTERNSHIPS
       </h1>
-      <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-4xl mx-auto">
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-4xl mx-auto">
         <div className="mb-6">
           <label
             htmlFor="scNumber"
