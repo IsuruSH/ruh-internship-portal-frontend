@@ -74,7 +74,7 @@ export default function Sidebar() {
   return (
     <div className="w-[250px] h-auto bg-white text-[#0F1D2F] flex flex-col overflow-y-auto p-4 pb-4 rounded-3xl ml-3 m-8 border-2 border-[#1C3A5B] fixed top-[64px]">
       <Link
-        href={"/student-dashboard"}
+        href={"/admin-dashboard"}
         className="text-xl font-bold mb-4 text-center"
       >
         Dashboard
