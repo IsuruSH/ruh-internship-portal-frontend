@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaTrash } from 'react-icons/fa';
 
 const InternshipDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -15,6 +15,10 @@ const InternshipDashboard = () => {
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+  };
+
+  const handleDelete = (indexToDelete) => {
+    setInterns(interns.filter((_, index) => index !== indexToDelete));
   };
 
   const filteredInterns = interns.filter((intern) =>
@@ -54,15 +58,21 @@ const InternshipDashboard = () => {
                 <th className="border px-4 py-2 bg-gray-300">Company Name</th>
                 <th className="border px-4 py-2 bg-gray-300">Designation</th>
                 <th className="border px-4 py-2 bg-gray-300">Time Period</th>
+                <th className="border px-4 py-2 bg-gray-300">Action</th>
               </tr>
             </thead>
             <tbody>
-              {filteredInterns.map((intern) => (
-                <tr key={intern.no} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{intern.no}</td>
+              {filteredInterns.map((intern, index) => (
+                <tr key={intern.id} className="border-b hover:bg-gray-50">
+                  <td className="px-4 py-3">{index+1}</td>
                   <td className="px-4 py-3">{intern.companyname}</td>
                   <td className="px-4 py-3">{intern.designation}</td>
                   <td className="px-4 py-3">{intern.time}</td>
+                  <td className="border px-4 py-2">
+                    <button onClick={() => handleDelete(index)} className="text-red-600 hover:text-red-800 justify-center">
+                      <FaTrash />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
