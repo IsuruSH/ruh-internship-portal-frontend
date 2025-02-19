@@ -3,7 +3,7 @@ const Instructions = () => {
     <>
       <div className="flex-grow p-8 overflow-y-auto ">
         <h1 className="text-2xl font-bold mb-4 text-center">INSTRUCTIONS</h1>
-        <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+        <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
           <div className="space-y-6 text-gray-800">
             {/* Introduction */}
             <p>
