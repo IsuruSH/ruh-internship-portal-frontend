@@ -1,13 +1,20 @@
 "use client";
-import savefeedback from '../../api/feedbackapi.js'; // Default import
-import { useState } from "react";
-
-
+import { useState, useEffect } from "react";
+import savefeedback from "../../api/feedbackapi.js"; // Default import
+import { useUser } from "../context/UserContext";
 
 export default function Feedback() {
   const [scNumber, setScNumber] = useState("");
   const [company, setCompany] = useState("");
   const [feedback, setFeedback] = useState("");
+  const user = useUser();
+
+  // Set scNumber when user is available
+  useEffect(() => {
+    if (user?.student_id) {
+      setScNumber(user.student_id);
+    }
+  }, [user]);
 
   const feedbackData = {
     sc_number: scNumber,
@@ -15,16 +22,13 @@ export default function Feedback() {
     feedback: feedback,
   };
 
-
-const handleSaveChanges =  () => {
-
-  console.log(feedbackData);
-  savefeedback(feedbackData); // Using the default import
-}
-
+  const handleSaveChanges = () => {
+    console.log(feedbackData);
+    savefeedback(feedbackData); // Using the default import
+  };
 
   return (
-    <div className="flex-1 overflow-y-auto p-8 ">
+    <div className="flex-1 overflow-y-auto p-8">
       <h1 className="text-2xl font-bold mb-4 text-center">FEEDBACKS</h1>
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <h2 className="text-lg font-normal mb-4">
@@ -39,7 +43,7 @@ const handleSaveChanges =  () => {
             id="sc_no"
             className="w-full p-2 border border-gray-300 rounded"
             value={scNumber}
-            onChange={(e) => setScNumber(e.target.value)}
+            readOnly // Make it non-editable if needed
           />
         </div>
         <div className="mb-6">
