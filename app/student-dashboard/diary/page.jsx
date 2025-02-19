@@ -6,7 +6,7 @@ export default function DiaryUpdates() {
   return (
     <div className="flex-1 overflow-y-auto p-8 ">
       <h1 className="text-2xl font-bold mb-4 text-center">DIARY UPDATES</h1>
-      <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <h2 className="text-lg font-semibold mb-4">Daily Updates</h2>
         <div className="mb-6">
           <label htmlFor="date" className="block text-base font-medium mb-2">

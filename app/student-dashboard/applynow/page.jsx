@@ -5,7 +5,7 @@ export default function MainContent() {
   return (
     <div className="flex-grow p-8 overflow-y-auto ">
       <h1 className="text-2xl font-bold mb-4 text-center">APPLY NOW</h1>
-      <div className="bg-slate-100 p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <p className="mb-6">
           Please read the instructions carefully and select your preferences.
         </p>
