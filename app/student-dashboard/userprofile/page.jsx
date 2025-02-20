@@ -38,12 +38,17 @@ const Page = () => {
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-5xl mx-auto">
         <div className="flex items-center mb-6">
           <label htmlFor="profileImage" className="relative cursor-pointer">
-            <img
-              src={formData.profilePreview || ""}
-              alt="Profile"
-              className="rounded-full w-20 h-20 mr-6 border border-gray-300 object-cover"
-            />
-            <FaCamera className="absolute bottom-0 right-0 bg-white p-1 rounded-full text-gray-700 text-xl" />
+            <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
+              {formData.profilePreview ? (
+                <img
+                  src={formData.profilePreview}
+                  alt="Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <FaCamera className="text-gray-500 text-3xl" />
+              )}
+            </div>
           </label>
           <input
             type="file"
@@ -52,12 +57,11 @@ const Page = () => {
             onChange={handleChange}
             className="hidden"
           />
-          <div>
-            <h3 className="text-xl font-semibold">John Doe</h3>
-            <p>SC/20XX/XXXXX</p>
+          <div className="ml-4">
+            <h3 className="text-lg font-semibold">John Doe</h3>
+            <p className="text-sm text-gray-500">SC/20XX/XXXXX</p>
           </div>
         </div>
-
         <div className="mb-6">
           <label htmlFor="address" className="block text-base font-medium mb-2">
             Address
