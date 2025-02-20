@@ -61,7 +61,7 @@ const InternshipDashboard = () => {
           </div>
           <button
             className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600"
-            onClick={() => router.push("/admin-dashboard/AddInternForm/")}
+            onClick={() => router.push("AddInternship/AddInternForm")}
           >
             + Add Intern
           </button>
