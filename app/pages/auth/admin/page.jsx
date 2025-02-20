@@ -61,7 +61,7 @@ function App() {
   };
 
   const onClose = () => {
-    console.log("Close button clicked");
+    router.push("/");
   };
 
   return (

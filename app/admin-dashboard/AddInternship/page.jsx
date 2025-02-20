@@ -2,14 +2,29 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaSearch, FaTrash } from 'react-icons/fa';
+import { FaSearch, FaTrash } from "react-icons/fa";
 
 const InternshipDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [interns, setInterns] = useState([
-    { no: 1, companyname: "ABC Corp", designation: "Software Intern", time: "6 months" },
-    { no: 2, companyname: "XYZ Ltd", designation: "Data Analyst", time: "3 months" },
-    { no: 3, companyname: "Tech Innovations", designation: "Frontend Developer", time: "1 year" }
+    {
+      no: 1,
+      companyname: "ABC Corp",
+      designation: "Software Intern",
+      time: "6 months",
+    },
+    {
+      no: 2,
+      companyname: "XYZ Ltd",
+      designation: "Data Analyst",
+      time: "3 months",
+    },
+    {
+      no: 3,
+      companyname: "Tech Innovations",
+      designation: "Frontend Developer",
+      time: "1 year",
+    },
   ]);
   const router = useRouter();
 
@@ -25,10 +40,11 @@ const InternshipDashboard = () => {
     intern.companyname.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-
   return (
     <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
-      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">ADD INTERNSHIPS</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+        ADD INTERNSHIPS
+      </h1>
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="flex items-center mb-6 space-x-4 justify-between">
           <div className="flex items-center space-x-2 flex-1">
@@ -63,13 +79,16 @@ const InternshipDashboard = () => {
             </thead>
             <tbody>
               {filteredInterns.map((intern, index) => (
-                <tr key={intern.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{index+1}</td>
+                <tr key={intern.no} className="border-b hover:bg-gray-50">
+                  <td className="px-4 py-3">{index + 1}</td>
                   <td className="px-4 py-3">{intern.companyname}</td>
                   <td className="px-4 py-3">{intern.designation}</td>
                   <td className="px-4 py-3">{intern.time}</td>
                   <td className="border px-4 py-2">
-                    <button onClick={() => handleDelete(index)} className="text-red-600 hover:text-red-800 justify-center">
+                    <button
+                      onClick={() => handleDelete(index)}
+                      className="text-red-600 hover:text-red-800 justify-center"
+                    >
                       <FaTrash />
                     </button>
                   </td>
