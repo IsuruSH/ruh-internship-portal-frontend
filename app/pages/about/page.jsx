@@ -29,7 +29,7 @@ const page = () => {
           </div>
         </div>
       </div>
-      <div class="w-3/4 mx-40 mt-10 font-normal text-xl text-center">
+      <div className="w-3/4 mx-40 mt-10 font-normal text-xl text-center">
         <p>
           Welcome to the University Internship Management System (IMS)! Our
           platform connects students with valuable internship opportunities,
@@ -45,11 +45,11 @@ const page = () => {
           individuals. Empower your future with IMS today!
         </p>
       </div>
-      <div class="container mx-auto px-6 py-8">
-        <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">
+      <div className="container mx-auto px-6 py-8">
+        <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">
           Administrative Panel
         </h2>
-        <div class="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           <NoticeBox
             title="Notice 1"
             content="Details about notice 1."
