@@ -1,8 +1,17 @@
 import { NextResponse } from "next/server";
 
 export function middleware(req) {
+  const { pathname } = req.nextUrl;
   const token = req.cookies.get("token")?.value;
-  if (!token) {
+  const adminToken = req.cookies.get("adminToken")?.value;
+  console.log(pathname);
+
+  if (pathname.startsWith("/admin-dashboard") && !adminToken) {
+    return NextResponse.redirect(new URL("/pages/auth/admin", req.url));
+  }
+
+  // Check if accessing student pages
+  if (pathname.startsWith("/student-dashboard") && !token) {
     return NextResponse.redirect(new URL("/pages/auth?mode=login", req.url));
   }
 
@@ -10,6 +19,5 @@ export function middleware(req) {
 }
 
 export const config = {
-
-  matcher: ["/student-dashboard/:path*"],
+  matcher: ["/student-dashboard/:path*", "/admin-dashboard/:path*"],
 };

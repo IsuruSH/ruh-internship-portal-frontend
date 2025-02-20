@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "../../lib/axios";
-import { useUser } from "../../student-dashboard/context/UserContext";
+import { useUser } from "../../context/UserContext";
 
 export default function Home() {
   const [formData, setFormData] = useState({

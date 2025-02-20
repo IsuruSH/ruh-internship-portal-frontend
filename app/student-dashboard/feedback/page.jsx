@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import savefeedback from "../../api/feedbackapi.js"; // Default import
-import { useUser } from "../context/UserContext";
+import { useUser } from "../../context/UserContext";
 
 export default function Feedback() {
   const [scNumber, setScNumber] = useState("");
