@@ -1,7 +1,9 @@
 // src/pages/AnalyzePage.jsx
+'use client';
 import React from 'react';
 import BarChart from '../components/admin-dashboard/layouts/BarChart'; 
 import PieChart from "../components/admin-dashboard/layouts/PieChart";
+import DashboardBoxes from '../components/admin-dashboard/layouts/DashboardBoxes';
 
 export default function MainContent() {
   return (
@@ -15,6 +17,10 @@ export default function MainContent() {
           
           <div>
             <PieChart />
+          </div>
+
+          <div>
+            <DashboardBoxes />
           </div>
         </div>
         
