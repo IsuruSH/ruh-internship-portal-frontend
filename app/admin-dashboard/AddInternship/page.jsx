@@ -1,44 +1,76 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaSearch, FaTrash } from "react-icons/fa";
+import { Trash2, X, AlertTriangle, Pencil } from "lucide-react";
+import api from "../../lib/axios";
+import { toast } from "react-hot-toast";
 
 const InternshipDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [interns, setInterns] = useState([
-    {
-      no: 1,
-      companyname: "ABC Corp",
-      designation: "Software Intern",
-      time: "6 months",
-    },
-    {
-      no: 2,
-      companyname: "XYZ Ltd",
-      designation: "Data Analyst",
-      time: "3 months",
-    },
-    {
-      no: 3,
-      companyname: "Tech Innovations",
-      designation: "Frontend Developer",
-      time: "1 year",
-    },
-  ]);
+  const [interns, setInterns] = useState([]);
+
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    intern: null,
+  });
+
   const router = useRouter();
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleDelete = (indexToDelete) => {
-    setInterns(interns.filter((_, index) => index !== indexToDelete));
+  const handleDeleteClick = (intern) => {
+    setDeleteModal({ isOpen: true, intern });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.intern) return;
+
+    // Remove the intern from the list
+    try {
+      // Make the API call to delete the company
+      const response = await api.delete(
+        `/pre-internship/api/v1/internship/${deleteModal.intern.id}`
+      );
+      if (response.status === 200) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
+
+      // Update the local state
+      setInterns(
+        interns.filter((interns) => interns.id !== deleteModal.interns?.id)
+      );
+
+      // Close the modal
+      setDeleteModal({ isOpen: false, intern: null });
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      // Here you might want to show an error message to the user
+    }
   };
 
   const filteredInterns = interns.filter((intern) =>
-    intern.companyname.toLowerCase().includes(searchTerm.toLowerCase())
+    intern?.Company?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  useEffect(() => {
+    // Fetch data from API
+    async function fetchData() {
+      try {
+        const response = await api.get("/pre-internship/api/v1/internship");
+        console.log(response.data);
+        setInterns(response.data?.internships);
+      } catch (error) {
+        console.error("Error fetching company data:", error);
+      }
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
@@ -79,23 +111,82 @@ const InternshipDashboard = () => {
             </thead>
             <tbody>
               {filteredInterns.map((intern, index) => (
-                <tr key={intern.no} className="border-b hover:bg-gray-50">
+                <tr key={intern.id} className="border-b hover:bg-gray-50">
                   <td className="px-4 py-3">{index + 1}</td>
-                  <td className="px-4 py-3">{intern.companyname}</td>
+                  <td className="px-4 py-3">{intern.Company.name}</td>
                   <td className="px-4 py-3">{intern.designation}</td>
-                  <td className="px-4 py-3">{intern.time}</td>
-                  <td className="border px-4 py-2">
+                  <td className="border-r px-4 py-3">{intern.duration}</td>
+                  <td className=" px-1 py-3 flex items-center justify-center gap-5 space-x-3">
                     <button
-                      onClick={() => handleDelete(index)}
-                      className="text-red-600 hover:text-red-800 justify-center"
+                      onClick={() => handleEditClick(intern)}
+                      className="text-blue-600 hover:text-blue-800"
                     >
-                      <FaTrash />
+                      <Pencil className="w-5 h-5" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(intern)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <FaTrash className="w-5 h-5" />
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+      <DeleteModal
+        isOpen={deleteModal.isOpen}
+        intern={deleteModal.intern}
+        onClose={() => setDeleteModal({ isOpen: false, intern: null })}
+        onConfirm={handleDeleteConfirm}
+      />
+    </div>
+  );
+};
+
+// Delete Confirmation Modal
+const DeleteModal = ({ isOpen, intern, onClose, onConfirm }) => {
+  if (!isOpen || !intern) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-[400px] relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-red-600" />
+          </div>
+        </div>
+
+        <h3 className="text-xl font-bold text-center mb-2">Confirm Deletion</h3>
+        <p className="text-gray-600 text-center mb-6">
+          Are you sure you want to delete{" "}
+          <span className="font-semibold">{intern.companyname}</span>? This
+          action cannot be undone.
+        </p>
+
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete
+          </button>
         </div>
       </div>
     </div>
