@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import CompanyBox from "../../components/admin-dashboard/layouts/CompanyBox";
-import StudentTable from "../../components/admin-dashboard/layouts/Studenttable";
+import StudentTable from "../../components/admin-dashboard/layouts/StudentTable";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 

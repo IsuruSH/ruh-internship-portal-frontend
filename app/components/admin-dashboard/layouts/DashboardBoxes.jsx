@@ -8,6 +8,7 @@ const Dashboard = () => {
   const [selectedBox, setSelectedBox] = useState(null);
 
   return (
+    <div className="p-6 bg-white shadow-lg rounded-lg flex flex-col w-full mx-auto">
     <div className="p-6">
       
       <div className="grid grid-cols-3 gap-6">
@@ -38,6 +39,7 @@ const Dashboard = () => {
       {selectedBox === "students" && <ShowStudentTable onClose={() => setSelectedBox(null)} />}
       {selectedBox === "messages" && <MessageTable onClose={() => setSelectedBox(null)} />}
       {selectedBox === "internships" && <InternshipTable onClose={() => setSelectedBox(null)} />}
+    </div>
     </div>
   );
 };
