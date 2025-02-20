@@ -1,57 +1,80 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { FaSearch, FaTrash } from "react-icons/fa";
+import api from "../../lib/axios";
+import {
+  Search,
+  Trash2,
+  X,
+  Plus,
+  Save,
+  Edit,
+  AlertTriangle,
+} from "lucide-react";
 
 const InternshipDashboard = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [interns, setInterns] = useState([
-    {
-      id: 1,
-      companyName: "Tech Corp",
-      address: "123 Tech Street",
-      email: "tech@corp.com",
-      phone: "123-456-7890",
-      person: "John Doe",
-      note: "Leading AI company",
-    },
-    {
-      id: 2,
-      companyName: "Innovate Ltd",
-      address: "456 Innovate Lane",
-      email: "info@innovate.com",
-      phone: "987-654-3210",
-      person: "Jane Smith",
-      note: "Great for software interns",
-    },
-    {
-      id: 3,
-      companyName: "Future Solutions",
-      address: "789 Future Road",
-      email: "contact@future.com",
-      phone: "555-123-4567",
-      person: "Alice Brown",
-      note: "Good opportunities in R&D",
-    },
-  ]);
+  const [companies, setCompanies] = useState([]);
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    company: null,
+  });
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const handleDelete = (indexToDelete) => {
-    setInterns(interns.filter((_, index) => index !== indexToDelete));
+  const handleDeleteClick = (company) => {
+    setDeleteModal({ isOpen: true, company });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.company) return;
+
+    try {
+      // Make the API call to delete the company
+      const response = await api.delete(
+        `/pre-internship/api/v1/company/${deleteModal.company.id}`
+      );
+      console.log("Delete response:", response);
+
+      // Update the local state
+      setCompanies(
+        companies.filter((company) => company.id !== deleteModal.company?.id)
+      );
+
+      // Close the modal
+      setDeleteModal({ isOpen: false, company: null });
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      // Here you might want to show an error message to the user
+    }
   };
 
   const handleAddCompany = () => {
     router.push("CompanyDetails/AddComForm");
   };
 
-  const filteredInterns = interns.filter((intern) =>
-    intern.companyName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredCompanies = companies.filter((company) =>
+    company?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  useEffect(() => {
+    // Fetch data from API
+    async function fetchData() {
+      try {
+        const response = await api.get("/pre-internship/api/v1/company");
+        console.log("Company data:", response);
+        setCompanies(response.data?.companies);
+      } catch (error) {
+        console.error("Error fetching company data:", error);
+      }
+    }
+    fetchData();
+  }, []);
 
   return (
     <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
@@ -100,18 +123,18 @@ const InternshipDashboard = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredInterns.map((intern, index) => (
-                <tr key={intern.id}>
+              {filteredCompanies.map((company, index) => (
+                <tr key={company.id}>
                   <td className="border px-4 py-2">{index + 1}</td>
-                  <td className="border px-4 py-2">{intern.companyName}</td>
-                  <td className="border px-4 py-2">{intern.address}</td>
-                  <td className="border px-4 py-2">{intern.email}</td>
-                  <td className="border px-4 py-2">{intern.phone}</td>
-                  <td className="border px-4 py-2">{intern.person}</td>
-                  <td className="border px-4 py-2">{intern.note}</td>
+                  <td className="border px-4 py-2">{company.name}</td>
+                  <td className="border px-4 py-2">{company.address}</td>
+                  <td className="border px-4 py-2">{company.email}</td>
+                  <td className="border px-4 py-2">{company.phone}</td>
+                  <td className="border px-4 py-2">{company.person}</td>
+                  <td className="border px-4 py-2">{company.note}</td>
                   <td className="border px-4 py-2">
                     <button
-                      onClick={() => handleDelete(index)}
+                      onClick={() => handleDeleteClick(company)}
                       className="text-red-600 hover:text-red-800"
                     >
                       <FaTrash />
@@ -121,6 +144,58 @@ const InternshipDashboard = () => {
               ))}
             </tbody>
           </table>
+        </div>
+      </div>
+      <DeleteModal
+        isOpen={deleteModal.isOpen}
+        company={deleteModal.company}
+        onClose={() => setDeleteModal({ isOpen: false, company: null })}
+        onConfirm={handleDeleteConfirm}
+      />
+    </div>
+  );
+};
+
+const DeleteModal = ({ isOpen, company, onClose, onConfirm }) => {
+  if (!isOpen || !company) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-[400px] relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-red-600" />
+          </div>
+        </div>
+
+        <h3 className="text-xl font-bold text-center mb-2">Confirm Deletion</h3>
+        <p className="text-gray-600 text-center mb-6">
+          Are you sure you want to delete{" "}
+          <span className="font-semibold">{company.name}</span>? This action
+          cannot be undone.
+        </p>
+
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete
+          </button>
         </div>
       </div>
     </div>

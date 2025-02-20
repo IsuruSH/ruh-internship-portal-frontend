@@ -85,7 +85,8 @@ export default function Sidebar() {
             key={href}
             href={href}
             className={`flex items-center gap-3 text-[#0F1D2F] text-base p-2 rounded-lg transition duration-300 ${
-              pathname === href
+              (pathname === href && href === "/admin-dashboard") || // Exact match for /admin-dashboard
+              (pathname.startsWith(href) && href !== "/admin-dashboard") // Start with check for other sub-routes
                 ? "font-bold bg-[#1C3A5B] text-blue-50"
                 : "hover:bg-[#1C3A5B] hover:text-blue-50"
             }`}
