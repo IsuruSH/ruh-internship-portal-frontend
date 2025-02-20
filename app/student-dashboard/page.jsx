@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "../lib/axios";
-import { useUser } from "./context/UserContext";
+import { useUser } from "../context/UserContext";
 import UpdateStudentProfile from "../components/student-dashboard/UpdateStudentProfile";
 
 const Page = () => {

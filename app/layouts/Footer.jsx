@@ -41,13 +41,13 @@ const Footer = () => {
           <h3 className={styles.footerTitle}>QUICK LINKS</h3>
           <ul>
             <li>
-              <Link href="/">HOME</Link>
+              <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="/about">ABOUT</Link>
+              <Link href="/pages/about">About</Link>
             </li>
             <li>
-              <Link href="/contactus">CONTACT US</Link>
+              <Link href="/pages/notices">Contact Us</Link>
             </li>
           </ul>
           <div>
@@ -56,12 +56,12 @@ const Footer = () => {
             <ul className={styles.socialList}>
               <br></br>
               <li className={styles.facebook}>
-                <Link href="https://www.facebook.com" passHref>
+                <Link href="https://www.facebook.com/ruhunadcs" passHref>
                   <FaFacebook />
                 </Link>
               </li>
               <li className={styles.linkedin}>
-                <Link href="https://www.linkedin.com" passHref>
+                <Link href="https://www.linkedin.com/" passHref>
                   <FaLinkedin />
                 </Link>
               </li>

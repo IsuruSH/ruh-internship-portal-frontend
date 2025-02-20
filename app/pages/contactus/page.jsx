@@ -2,6 +2,7 @@
 import React from "react";
 import Header from "../../layouts/Header";
 import Footer from "../../layouts/Footer";
+import Map from "../../components/home/Map";
 
 const page = () => {
   return (
@@ -21,16 +22,7 @@ const page = () => {
           </div>
 
           <div className=" flex relative overflow-hidden pb-[50%] h-0">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m28!1m12!1m3!1d3968.4026864582193!2d80.57439577447757!3d5.939104779679527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m13!3e6!4m5!1s0x3ae1391b4f1c6a11%3A0xd93984c5ac97ab2b!2sDepartment%20of%20Computer%20Science%2C%20University%20of%20Ruhuna%2C%20Sri%20Lanka%2C%20A2%2C%20Matara!3m2!1d5.9386049!2d80.5765229!4m5!1s0x3ae1391b4f1c6a11%3A0xd93984c5ac97ab2b!2sDepartment%20of%20Computer%20Science%2C%20University%20of%E2%80%A6!3m2!1d5.9386049!2d80.5765229!5e0!3m2!1sen!2slk!4v1735624717329!5m2!1sen!2slk"
-              className="absolute top-10 left-0 border-0 w-full h-full"
-              width="600"
-              height="450"
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Responsive Google Map"
-            ></iframe>
+            <Map/>
           </div>
         </div>
         <div className="md:w-1/2 p-4">
@@ -38,7 +30,7 @@ const page = () => {
             If you have any questions regarding applying for internships, Please
             feel free to ask:
           </h2>
-          <div class="bg-gray-200 p-6 rounded-md">
+          <div className="bg-gray-200 p-6 rounded-md">
             <form className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
@@ -84,7 +76,7 @@ const page = () => {
               </div>
               <button
                 type="submit"
-                className="w-full bg-gray-800 text-white p-2 rounded-md"
+                className="w-full bg-[#0F1D2F] text-white p-2 rounded-md"
               >
                 Submit
               </button>

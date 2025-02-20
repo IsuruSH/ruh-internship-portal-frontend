@@ -122,6 +122,30 @@ const Page = () => {
             className="w-full p-2 border border-gray-300 rounded"
           />
         </div>
+        <div className="flex mb-6">
+          <div className="w-1/2 pr-2">
+            <label htmlFor="cv1" className="block text-base font-medium mb-2">
+              CV 1
+            </label>
+            <input
+              type="file"
+              id="cv1"
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+          <div className="w-1/2 pr-2">
+            <label htmlFor="cv2" className="block text-base font-medium mb-2">
+              CV 2
+            </label>
+            <input
+              type="file"
+              id="cv2"
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+        </div>
         <div className="flex justify-end">
           <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-red-600 mr-4">
             Cancel

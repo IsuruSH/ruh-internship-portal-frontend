@@ -11,9 +11,9 @@ const Header = () => {
 
   const navLinks = [
     { name: "Home", path: "/" },
-    { name: "Contact", path: "/pages/contactus" },
-    { name: "About", path: "/pages/about" },
     { name: "Notices", path: "/pages/notices" },
+    { name: "About", path: "/pages/about" },
+    { name: "Contact", path: "/pages/contactus" },
   ];
 
   const getLinkClass = (path) =>
@@ -24,7 +24,7 @@ const Header = () => {
     }`;
 
   return (
-    <header className="bg-gray-800 shadow-lg">
+    <header className="bg-[#0F1D2F] shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* Logo Section */}
@@ -84,8 +84,8 @@ const Header = () => {
       </div>
       {/* Mobile Navigation */}
       {isOpen && (
-        <nav className="sm:hidden absolute w-full bg-gray-900 flex flex-col items-center justify-center z-50 transition-transform transform duration-300">
-          <ul className="flex flex-col items-center space-y-4 py-4 bg-gray-900">
+        <nav className="sm:hidden absolute w-full bg-[#0F1D2F] flex flex-col items-center justify-center z-50 transition-transform transform duration-300">
+          <ul className="flex flex-col items-center space-y-4 py-4 bg-[#0F1D2F]">
             {navLinks.map((link) => (
               <li key={link.path}>
                 <Link

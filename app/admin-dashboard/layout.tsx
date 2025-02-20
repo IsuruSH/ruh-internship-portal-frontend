@@ -4,7 +4,7 @@ import "../globals.css";
 import Header from "../components/admin-dashboard/layouts/Header";
 import Sidebar from "../components/admin-dashboard/layouts/Sidebar";
 import api from "../lib/axios";
-import { UserProvider } from "../student-dashboard/context/UserContext";
+import { UserProvider } from "../context/AdminContext";
 import { cookies } from "next/headers";
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,9 +23,10 @@ export const metadata: Metadata = {
 
 async function getUserData() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
+  const token = cookieStore.get("adminToken")?.value;
+
   try {
-    const response = await api.get("/auth/student/verify-token", {
+    const response = await api.get("/auth/admin/verify-token", {
       headers: {
         Cookie: `token=${token}`, // Send token in the Cookie header
       },
@@ -43,7 +44,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await null;
+  const user = await getUserData();
 
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

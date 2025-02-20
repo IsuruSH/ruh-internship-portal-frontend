@@ -4,7 +4,7 @@ import "../globals.css";
 import Header from "../components/student-dashboard/layouts/Header";
 import Sidebar from "../components/student-dashboard/layouts/Sidebar";
 import api from "../lib/axios";
-import { UserProvider } from "../student-dashboard/context/UserContext";
+import { UserProvider } from "../context/UserContext";
 import { cookies } from "next/headers";
 const geistSans = Geist({
   variable: "--font-geist-sans",
