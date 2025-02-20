@@ -4,7 +4,6 @@ export function middleware(req) {
   const { pathname } = req.nextUrl;
   const token = req.cookies.get("token")?.value;
   const adminToken = req.cookies.get("adminToken")?.value;
-  console.log(pathname);
 
   if (pathname.startsWith("/admin-dashboard") && !adminToken) {
     return NextResponse.redirect(new URL("/pages/auth/admin", req.url));
