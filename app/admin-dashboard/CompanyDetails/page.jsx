@@ -4,15 +4,8 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { FaSearch, FaTrash } from "react-icons/fa";
 import api from "../../lib/axios";
-import {
-  Search,
-  Trash2,
-  X,
-  Plus,
-  Save,
-  Edit,
-  AlertTriangle,
-} from "lucide-react";
+import { Trash2, X, AlertTriangle } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const InternshipDashboard = () => {
   const router = useRouter();
@@ -39,7 +32,11 @@ const InternshipDashboard = () => {
       const response = await api.delete(
         `/pre-internship/api/v1/company/${deleteModal.company.id}`
       );
-      console.log("Delete response:", response);
+      if (response.status === 200) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
 
       // Update the local state
       setCompanies(
@@ -67,7 +64,6 @@ const InternshipDashboard = () => {
     async function fetchData() {
       try {
         const response = await api.get("/pre-internship/api/v1/company");
-        console.log("Company data:", response);
         setCompanies(response.data?.companies);
       } catch (error) {
         console.error("Error fetching company data:", error);
