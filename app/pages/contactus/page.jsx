@@ -30,7 +30,7 @@ const page = () => {
             If you have any questions regarding applying for internships, Please
             feel free to ask:
           </h2>
-          <div className="bg-gray-200 p-6 rounded-md">
+          <div className="bg-slate-100 p-6 rounded-md">
             <form className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700">
