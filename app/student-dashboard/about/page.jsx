@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaEnvelope, FaPhone, FaCalendarAlt } from "react-icons/fa";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import saveinternshipdetails from "../../api/internshipapi.js";
+import { useUser } from "../../context/UserContext";
 
 export default function AboutInternship() {
   const [scNumber, setScNumber] = useState("");
@@ -16,6 +17,13 @@ export default function AboutInternship() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [supervisorName, setSupervisorName] = useState("");
+  const user = useUser();
+
+  useEffect(() => {
+    if (user?.student_id) {
+      setScNumber(user.student_id);
+    }
+  }, [user]);
 
   const handleClearForm = () => {
     setScNumber("");
@@ -67,6 +75,7 @@ export default function AboutInternship() {
             value={scNumber}
             onChange={(e) => setScNumber(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
+            readOnly
           />
         </div>
         <div className="flex mb-6">

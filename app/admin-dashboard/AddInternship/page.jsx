@@ -73,7 +73,7 @@ const InternshipDashboard = () => {
   }, []);
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
+    <div className="flex-grow p-8 overflow-y-auto mx-4">
       <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
         ADD INTERNSHIPS
       </h1>

@@ -90,12 +90,12 @@ const InternshipDashboard = () => {
             </button>
           </div>
           <div className="flex justify-end space-x-2">
-            <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">
+            {/* <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">
               Save
             </button>
             <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">
               Edit
-            </button>
+            </button> */}
             <button
               className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600"
               onClick={handleAddCompany}

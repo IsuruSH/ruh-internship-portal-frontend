@@ -10,7 +10,7 @@ const AddNotice = () => {
   };
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
+    <div className="flex-grow p-8 overflow-y-auto mx-4">
       <h1 className="text-2xl font-bold mb-4 text-center">ADD NOTICES</h1>
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="mb-6">

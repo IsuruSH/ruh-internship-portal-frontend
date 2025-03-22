@@ -1,27 +1,45 @@
-'use client';
-import React, { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+"use client";
+import React, { useState } from "react";
+import { FaSearch } from "react-icons/fa";
 
 const InternshipDashboard = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  
+  const [searchTerm, setSearchTerm] = useState("");
+
   // Dummy data (this data will come from the database table in real implementation)
   const [interns, setInterns] = useState([
-    { id: 1, name: 'John Doe', scNumber: 'SC12345', company: 'ABC Corp', feedback: 'Great experience!' },
-    { id: 2, name: 'Jane Smith', scNumber: 'SC67890', company: 'XYZ Ltd', feedback: 'Learned a lot!' },
-    { id: 3, name: 'Alice Johnson', scNumber: 'SC54321', company: 'Tech Innovations', feedback: 'Very supportive team.' }
+    {
+      id: 1,
+      name: "John Doe",
+      scNumber: "SC12345",
+      company: "ABC Corp",
+      feedback: "Great experience!",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      scNumber: "SC67890",
+      company: "XYZ Ltd",
+      feedback: "Learned a lot!",
+    },
+    {
+      id: 3,
+      name: "Alice Johnson",
+      scNumber: "SC54321",
+      company: "Tech Innovations",
+      feedback: "Very supportive team.",
+    },
   ]);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredInterns = interns.filter(intern =>
+  const filteredInterns = interns.filter((intern) =>
     intern.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
+    <div className="flex-grow p-8 overflow-y-auto mx-4">
       <h1 className="text-2xl font-bold mb-4 text-center">STUDENT FEEDBACKS</h1>
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="search-section flex items-center mb-4 space-x-4 justify-between">
@@ -33,7 +51,10 @@ const InternshipDashboard = () => {
               onChange={handleSearch}
               className="border rounded p-2 w-1/3 h-10"
             />
-            <button onClick={handleSearch} className="bg-[#0F1D2F] text-white p-2 rounded-lg h-10 w-12 flex items-center justify-center hover:bg-blue-700">
+            <button
+              onClick={handleSearch}
+              className="bg-[#0F1D2F] text-white p-2 rounded-lg h-10 w-12 flex items-center justify-center hover:bg-blue-700"
+            >
               <FaSearch />
             </button>
           </div>

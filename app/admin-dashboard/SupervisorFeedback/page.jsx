@@ -1,14 +1,32 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
+import { useState } from "react";
+import { FaSearch } from "react-icons/fa";
 
 const InternshipDashboard = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const interns = [
-    { id: 1, companyName: 'Tech Corp', email: 'tech@corp.com', studentName: 'Alice Johnson', feedback: 'Excellent performance' },
-    { id: 2, companyName: 'Innovate Ltd', email: 'info@innovate.com', studentName: 'Bob Smith', feedback: 'Very creative' },
-    { id: 3, companyName: 'Future Solutions', email: 'contact@future.com', studentName: 'Charlie Brown', feedback: 'Needs improvement' },
+    {
+      id: 1,
+      companyName: "Tech Corp",
+      email: "tech@corp.com",
+      studentName: "Alice Johnson",
+      feedback: "Excellent performance",
+    },
+    {
+      id: 2,
+      companyName: "Innovate Ltd",
+      email: "info@innovate.com",
+      studentName: "Bob Smith",
+      feedback: "Very creative",
+    },
+    {
+      id: 3,
+      companyName: "Future Solutions",
+      email: "contact@future.com",
+      studentName: "Charlie Brown",
+      feedback: "Needs improvement",
+    },
   ];
 
   const filteredInterns = interns.filter((intern) =>
@@ -16,8 +34,10 @@ const InternshipDashboard = () => {
   );
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mt-16 mx-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">SUPERVISOR FEEDBACKS</h1>
+    <div className="flex-grow p-8 overflow-y-auto  mx-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">
+        SUPERVISOR FEEDBACKS
+      </h1>
       <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
         <div className="search-section flex items-center mb-4 space-x-4 justify-between">
           <div className="flex items-center space-x-2 flex-1">
