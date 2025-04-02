@@ -21,10 +21,7 @@ export default function UserProfile() {
     console.log(comapanyData);
 
     try {
-      const response = await api.post(
-        "/pre-internship/api/v1/company",
-        comapanyData
-      );
+      const response = await api.post("/company", comapanyData);
       console.log(response);
       if (response.status === 201) {
         toast.success(response.data.message);

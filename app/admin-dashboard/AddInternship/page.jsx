@@ -32,9 +32,7 @@ const InternshipDashboard = () => {
     // Remove the intern from the list
     try {
       // Make the API call to delete the company
-      const response = await api.delete(
-        `/pre-internship/api/v1/internship/${deleteModal.intern.id}`
-      );
+      const response = await api.delete(`/internship/${deleteModal.intern.id}`);
       if (response.status === 200) {
         toast.success(response.data.message);
       } else {
@@ -62,7 +60,7 @@ const InternshipDashboard = () => {
     // Fetch data from API
     async function fetchData() {
       try {
-        const response = await api.get("/pre-internship/api/v1/internship");
+        const response = await api.get("/internship");
         console.log(response.data);
         setInterns(response.data?.internships);
       } catch (error) {

@@ -16,9 +16,7 @@ export default function UserProfile() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await api.get(
-          "/pre-internship/api/v1/company/list/names"
-        );
+        const response = await api.get("/company/list/names");
 
         setCompanies(response.data.companies);
       } catch (error) {
@@ -32,10 +30,7 @@ export default function UserProfile() {
     const internshipData = { companyId, designation, duration };
 
     try {
-      const response = await api.post(
-        "/pre-internship/api/v1/internship",
-        internshipData
-      );
+      const response = await api.post("/internship", internshipData);
 
       if (response.status === 201) {
         toast.success(response.data.message);
