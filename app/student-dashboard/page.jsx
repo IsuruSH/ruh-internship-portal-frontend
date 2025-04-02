@@ -17,7 +17,7 @@ const Page = () => {
 
     async function fetchData() {
       try {
-        const response = await api.get(`/api/v1/student/${user.id}`);
+        const response = await api.get(`/student/${user.id}`);
         setStudent(response.data);
         setFirstLogin(response.data.first_login);
 
