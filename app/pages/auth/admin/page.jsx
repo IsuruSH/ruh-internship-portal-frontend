@@ -49,14 +49,12 @@ function App() {
     // Call API to login
     try {
       const response = await api.post("/auth/login/admin", formData);
-      if (response.status == 200) {
+      if (response.status === 200) {
         toast.success(response.data.message);
         router.push("/admin-dashboard");
-      } else {
-        toast.error(response.data.message);
       }
     } catch (error) {
-      console.error("Error logging in:", error);
+      toast.error(error.response?.data?.message || "Something went wrong"); // Show backend error message
     }
   };
 

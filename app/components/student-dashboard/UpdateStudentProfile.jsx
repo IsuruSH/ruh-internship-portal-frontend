@@ -58,10 +58,7 @@ export default function Home() {
     });
 
     try {
-      const response = await api.put(
-        `/api/v1/student/${user.id}`,
-        formDataToSend
-      );
+      const response = await api.put(`/student/${user.id}`, formDataToSend);
       console.log(response.data);
     } catch (error) {}
 
