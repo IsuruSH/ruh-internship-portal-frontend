@@ -1,12 +1,15 @@
-// components/CreatePreferenceForm.js
 "use client";
 import React, { useState, useEffect } from "react";
 import { Search, Plus, X, Save } from "lucide-react";
 import Link from "next/link";
-import api from "../../../lib/axios"; // Adjust the import based on your project structure
+import api from "../../../lib/axios";
 import toast from "react-hot-toast";
 
-export default function CreatePreferenceForm({ onSave }) {
+export default function CreatePreferenceForm({
+  onSave,
+  initialData = null,
+  isEditMode = false,
+}) {
   const [formData, setFormData] = useState({
     batch: "",
     instructions:
@@ -19,10 +22,25 @@ export default function CreatePreferenceForm({ onSave }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [activePreferenceIndex, setActivePreferenceIndex] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Initialize form with existing data in edit mode
+  useEffect(() => {
+    if (isEditMode && initialData) {
+      setFormData({
+        batch: initialData?.batch,
+        instructions: initialData?.instructions,
+        deadline: initialData?.deadline.split("T")[0],
+        preferences: initialData?.Preferences.map((pref) => ({
+          name: pref.name,
+          companies: pref.Companies.map((c) => c.id || c), // Handle both object and ID formats
+        })),
+      });
+    }
+  }, [initialData, isEditMode]);
 
   const fetchCompanies = async () => {
     try {
-      // Fetch companies from the backend
       const response = await api.get("/company/list/names");
       setAllCompanies(response.data.companies);
       setFilteredCompanies(response.data.companies);
@@ -31,15 +49,13 @@ export default function CreatePreferenceForm({ onSave }) {
     }
   };
 
-  // Fetch companies from API
   useEffect(() => {
     fetchCompanies();
   }, []);
 
-  // Filter companies based on search
   useEffect(() => {
     if (searchTerm.trim() === "") {
-      setFilteredCompanies(allCompanies);
+      setFilteredCompanies([]);
     } else {
       setFilteredCompanies(
         allCompanies.filter((company) =>
@@ -68,6 +84,7 @@ export default function CreatePreferenceForm({ onSave }) {
       updatedPreferences[activePreferenceIndex].companies.push(companyId);
       setFormData((prev) => ({ ...prev, preferences: updatedPreferences }));
     }
+    setSearchTerm("");
   };
 
   const removeCompanyFromPreference = (prefIndex, companyId) => {
@@ -105,18 +122,34 @@ export default function CreatePreferenceForm({ onSave }) {
     e.preventDefault();
 
     if (!formData.batch || !formData.deadline) {
-      alert("Please fill in all required fields");
+      toast.error("Please fill in all required fields");
       return;
     }
 
-    if (typeof onSave === "function") {
-      onSave(formData);
+    setIsSubmitting(true);
+
+    try {
+      const dataToSave = {
+        ...formData,
+        preferences: formData.preferences.map((pref) => ({
+          name: pref.name,
+          companies: pref.companies,
+        })),
+      };
+
+      await onSave(dataToSave);
+    } catch (error) {
+      console.error("Form submission error:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6">
-      <h2 className="text-xl font-semibold mb-6">Create New Preference Form</h2>
+      <h2 className="text-xl font-semibold mb-6">
+        {isEditMode ? "Edit Preference Form" : "Create New Preference Form"}
+      </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Basic Info */}
@@ -180,17 +213,18 @@ export default function CreatePreferenceForm({ onSave }) {
           {/* Preference Tabs */}
           <div className="flex space-x-2 mb-4 overflow-x-auto pb-2">
             {formData.preferences.map((pref, index) => (
-              <div
-                key={index}
-                type="button"
-                onClick={() => setActivePreferenceIndex(index)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ${
-                  activePreferenceIndex === index
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {pref.name}
+              <div key={index} className="flex items-center">
+                <button
+                  type="button"
+                  onClick={() => setActivePreferenceIndex(index)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ${
+                    activePreferenceIndex === index
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {pref.name}
+                </button>
                 {formData.preferences.length > 1 && (
                   <button
                     type="button"
@@ -198,7 +232,7 @@ export default function CreatePreferenceForm({ onSave }) {
                       e.stopPropagation();
                       removePreference(index);
                     }}
-                    className="ml-2 text-gray-500 hover:text-red-500"
+                    className="ml-1 p-1 text-gray-500 hover:text-red-500"
                   >
                     <X className="w-3 h-3" />
                   </button>
@@ -226,7 +260,7 @@ export default function CreatePreferenceForm({ onSave }) {
               />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-4 relative">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Search and Add Companies
               </label>
@@ -241,18 +275,13 @@ export default function CreatePreferenceForm({ onSave }) {
                 />
               </div>
 
-              {/* Only show company list when there's a search term */}
-              {/* max-h-60 overflow-y-auto border border-gray-200 rounded-lg */}
               {searchTerm && (
-                <div className="absolute z-50 w-[50%] mt-1 bg-white shadow-lg rounded-lg border border-gray-200 max-h-60 overflow-y-auto ">
+                <div className="absolute z-50 w-[50%] mt-1 bg-white shadow-lg rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
                   {filteredCompanies.length > 0 ? (
                     filteredCompanies.map((company) => (
                       <div
                         key={company.id}
-                        onClick={() => {
-                          addCompanyToPreference(company.id);
-                          setSearchTerm("");
-                        }}
+                        onClick={() => addCompanyToPreference(company.id)}
                         className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex justify-between items-center gap-8"
                       >
                         <span>{company.name}</span>
@@ -321,17 +350,50 @@ export default function CreatePreferenceForm({ onSave }) {
         {/* Action Buttons */}
         <div className="pt-4 flex justify-end space-x-4">
           <Link
-            href="/admin-dashboard/PreferenceUpdate" // Or wherever you want to navigate back to
+            href="/admin-dashboard/PreferenceUpdate"
             className="inline-flex justify-center items-center px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Cancel
           </Link>
           <button
             type="submit"
-            className="inline-flex justify-center items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            disabled={isSubmitting}
+            className="inline-flex justify-center items-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-70"
           >
-            <Plus className="w-4 h-4 mr-2" />
-            Create Form
+            {isSubmitting ? (
+              <>
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                {isEditMode ? "Updating..." : "Creating..."}
+              </>
+            ) : (
+              <>
+                {isEditMode ? (
+                  <Save className="w-4 h-4 mr-2" />
+                ) : (
+                  <Plus className="w-4 h-4 mr-2" />
+                )}
+                {isEditMode ? "Update Form" : "Create Form"}
+              </>
+            )}
           </button>
         </div>
       </form>
