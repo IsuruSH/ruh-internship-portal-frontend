@@ -49,7 +49,7 @@ const PreferencesPage = () => {
   };
 
   const handleEditForm = (formId) => {
-    router.push(`/preferences/edit/${formId}`);
+    router.push(`PreferenceUpdate/edit/${formId}`);
   };
 
   const filteredForms = preferenceForms.filter((form) =>
