@@ -163,7 +163,7 @@ export default function MainContent() {
             <h1 className="text-2xl font-bold mb-2">Internship Preferences</h1>
             <p className="text-gray-600">Batch: {preferenceForm.batch}</p>
           </div>
-          <div className="flex items-center bg-red-100 px-4 py-2 rounded-lg mt-4 md:mt-0">
+          <div className="flex items-center bg-red-50 px-4 py-2 rounded-lg mt-4 md:mt-0">
             <Clock className="w-5 h-5 text-red-600 mr-2" />
             <span className="font-medium text-red-700">
               Deadline: {new Date(preferenceForm.deadline).toLocaleDateString()}{" "}
