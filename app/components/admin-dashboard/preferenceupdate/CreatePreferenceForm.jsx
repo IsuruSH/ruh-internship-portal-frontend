@@ -213,18 +213,17 @@ export default function CreatePreferenceForm({
           {/* Preference Tabs */}
           <div className="flex space-x-2 mb-4 overflow-x-auto pb-2">
             {formData.preferences.map((pref, index) => (
-              <div key={index} className="flex items-center">
-                <button
-                  type="button"
-                  onClick={() => setActivePreferenceIndex(index)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ${
-                    activePreferenceIndex === index
-                      ? "bg-blue-100 text-blue-700"
-                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                  }`}
-                >
-                  {pref.name}
-                </button>
+              <div
+                key={index}
+                type="button"
+                onClick={() => setActivePreferenceIndex(index)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ${
+                  activePreferenceIndex === index
+                    ? "bg-blue-100 text-blue-700"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+              >
+                {pref.name}
                 {formData.preferences.length > 1 && (
                   <button
                     type="button"
@@ -232,7 +231,7 @@ export default function CreatePreferenceForm({
                       e.stopPropagation();
                       removePreference(index);
                     }}
-                    className="ml-1 p-1 text-gray-500 hover:text-red-500"
+                    className="ml-2 text-gray-500 hover:text-red-500"
                   >
                     <X className="w-3 h-3" />
                   </button>

@@ -9,12 +9,6 @@ import { useRouter } from "next/navigation";
 export default function CreatePreferencePage() {
   const router = useRouter();
   const handleSave = async (formData) => {
-    console.log("Form data to save:", formData);
-    // Here you would typically:
-    // 1. Save to your API
-    // 2. Redirect to the preferences list
-    // 3. Show success message
-
     const response = await api.post("/preference-form", formData);
     if (response.status === 201) {
       toast.success("Form created successfully!");

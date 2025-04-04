@@ -41,7 +41,6 @@ export default function EditPreferencePage() {
         toast.error("Error updating form");
       }
     } catch (error) {
-      console.error("Error updating form:", error);
       toast.error("Failed to update form");
     }
   };
