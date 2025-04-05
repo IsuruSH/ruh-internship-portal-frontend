@@ -6,6 +6,7 @@ import { FaTimes, FaInfoCircle, FaSort, FaEnvelope } from "react-icons/fa";
 import EmailModal from "../../components/admin-dashboard/EmailModal";
 import api from "../../lib/axios";
 import { toast } from "react-hot-toast";
+import StudentHoverCard from "../../components/admin-dashboard/preferenceupdate/StudentHoverCard";
 
 // Student Component
 const StudentCard = ({ student, onRemove, isInPanel, companyId }) => {
@@ -40,20 +41,24 @@ const StudentCard = ({ student, onRemove, isInPanel, companyId }) => {
       </div>
       <div className="flex items-center space-x-4">
         <a
-          href={`${process.env.NEXT_PUBLIC_SERVER_URL}${student.cvLink}`}
+          href={`${process.env.NEXT_PUBLIC_SERVER_URL}${
+            student?.cvLink || "blank.pdf"
+          }`}
           className="text-gray-500 hover:text-black hover:bg-gray-100 text-sm border rounded px-[6px] py-[1px]"
           title="View CV"
           target="_blank"
         >
           C V
         </a>
-        <a
-          href={`/student/${student.id}`}
-          className="text-gray-500 hover:text-gray-700"
-          title="Student Info"
-        >
-          <FaInfoCircle />
-        </a>
+        <StudentHoverCard studentId={`${student.id}`}>
+          <span
+            className="text-gray-500 hover:text-gray-700"
+            title="Student Info"
+          >
+            <FaInfoCircle />
+          </span>
+        </StudentHoverCard>
+
         {!isInPanel && (
           <button
             onClick={() => onRemove(student.id, companyId)}
