@@ -40,7 +40,7 @@ const StudentCard = ({ student, onRemove, isInPanel, companyId }) => {
       </div>
       <div className="flex items-center space-x-4">
         <a
-          href={`/cv/${student.id}`}
+          href={`${process.env.NEXT_PUBLIC_SERVER_URL}${student.cvLink}`}
           className="text-gray-500 hover:text-black hover:bg-gray-100 text-sm border rounded px-[6px] py-[1px]"
           title="View CV"
           target="_blank"
