@@ -2,24 +2,16 @@
 import { useState, useEffect, useCallback } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import {
-  FaTimes,
-  FaInfoCircle,
-  FaPaperclip,
-  FaSort,
-  FaEnvelope,
-} from "react-icons/fa";
+import { FaTimes, FaInfoCircle, FaSort, FaEnvelope } from "react-icons/fa";
+import EmailModal from "../../components/admin-dashboard/EmailModal";
+import api from "../../lib/axios";
+import { toast } from "react-hot-toast";
 
 // Student Component
-const StudentCard = ({ student, onRemove, isInPanel }) => {
+const StudentCard = ({ student, onRemove, isInPanel, companyId }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "STUDENT",
     item: { id: student.id },
-    end: (item, monitor) => {
-      if (!monitor.didDrop()) {
-        onRemove(item.id);
-      }
-    },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
@@ -38,6 +30,12 @@ const StudentCard = ({ student, onRemove, isInPanel }) => {
         <div className="font-medium">{student.name}</div>
         <div className="text-sm text-gray-600">
           {student.scNumber} • GPA: {student.gpa}
+          {isInPanel && student.companyIds.length > 0 && (
+            <span className="ml-2 text-xs text-blue-600">
+              (Assigned to {student.companyIds.length} company
+              {student.companyIds.length !== 1 ? "s" : ""})
+            </span>
+          )}
         </div>
       </div>
       <div className="flex items-center space-x-4">
@@ -45,6 +43,7 @@ const StudentCard = ({ student, onRemove, isInPanel }) => {
           href={`/cv/${student.id}`}
           className="text-gray-500 hover:text-black hover:bg-gray-100 text-sm border rounded px-[6px] py-[1px]"
           title="View CV"
+          target="_blank"
         >
           C V
         </a>
@@ -57,7 +56,7 @@ const StudentCard = ({ student, onRemove, isInPanel }) => {
         </a>
         {!isInPanel && (
           <button
-            onClick={() => onRemove(student.id)}
+            onClick={() => onRemove(student.id, companyId)}
             className="text-red-500 hover:text-red-700"
             title="Remove from company"
           >
@@ -70,7 +69,14 @@ const StudentCard = ({ student, onRemove, isInPanel }) => {
 };
 
 // Company Box Component
-const CompanyBox = ({ company, students, onDrop, onRemove, onSortCompany }) => {
+const CompanyBox = ({
+  company,
+  students,
+  onDrop,
+  onRemove,
+  onSortCompany,
+  companySort,
+}) => {
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "STUDENT",
     drop: (item) => onDrop(item.id, company.id),
@@ -79,69 +85,97 @@ const CompanyBox = ({ company, students, onDrop, onRemove, onSortCompany }) => {
     }),
   }));
 
-  const companyStudents = students.filter((s) => s.companyId === company.id);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const companyStudents = students.filter((s) =>
+    s.companyIds.includes(company.id)
+  );
+
+  const handleSendEmail = async (emailData) => {
+    try {
+      // Here you would call your API to send the email
+      await api.post("/send-email", emailData);
+      setShowEmailModal(false);
+      toast.success("Email sent successfully!");
+    } catch (error) {
+      console.error("Error sending email:", error);
+      toast.error("Failed to send email. Please try again.");
+    }
+  };
 
   return (
-    <div
-      ref={drop}
-      className={`border rounded-lg p-4 h-fit flex flex-col shadow-sm ${
-        isOver ? "bg-blue-50 border-blue-300" : "bg-white border-gray-200"
-      }`}
-    >
-      <div className="flex justify-between items-center mb-3 border-b pb-2">
-        <div className="flex flex-col">
-          <h3 className="font-bold text-lg text-gray-800">{company.name}</h3>
-          <p className="text-sm text-gray-500">{company.email}</p>
+    <>
+      <div
+        ref={drop}
+        className={`border rounded-lg p-4 h-fit flex flex-col shadow-sm ${
+          isOver ? "bg-blue-50 border-blue-300" : "bg-white border-gray-200"
+        }`}
+      >
+        <div className="flex justify-between items-center mb-3 border-b pb-2">
+          <div className="flex flex-col">
+            <h3 className="font-bold text-lg text-gray-800">{company.name}</h3>
+            <p className="text-sm text-gray-500">{company.email}</p>
+          </div>
+
+          <div className="relative">
+            <select
+              value={companySort[company.id] || "scNumber"}
+              onChange={(e) => onSortCompany(company.id, e.target.value)}
+              className="appearance-none bg-gray-100 border border-gray-300 rounded pl-2 pr-6 py-1 text-xs"
+            >
+              <option value="scNumber">SC Number</option>
+              <option value="gpa">GPA</option>
+              <option value="name">Name</option>
+            </select>
+            <FaSort className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs" />
+          </div>
         </div>
 
-        <div className="relative">
-          <select
-            onChange={(e) => onSortCompany(company.id, e.target.value)}
-            className="appearance-none bg-gray-100 border border-gray-300 rounded pl-2 pr-6 py-1 text-xs"
+        <div className="flex-grow overflow-y-auto mb-3 space-y-2">
+          {companyStudents.length > 0 ? (
+            companyStudents.map((student) => (
+              <StudentCard
+                key={`${student.id}-${company.id}`}
+                student={student}
+                onRemove={onRemove}
+                isInPanel={false}
+                companyId={company.id}
+              />
+            ))
+          ) : (
+            <div className="text-center text-gray-400 py-4">
+              Drag students here
+            </div>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between border-t pt-3 w-full">
+          {companyStudents.length > 0 ? (
+            <div className="text-sm text-gray-500">
+              {companyStudents.length}{" "}
+              {companyStudents.length === 1 ? "student" : "students"}
+            </div>
+          ) : (
+            <div></div>
+          )}
+          <button
+            className="mt-auto flex items-center justify-center w-fit px-4 py-2 bg-[#0F1D2F] text-white rounded hover:bg-gray-600 transition-colors"
+            onClick={() => setShowEmailModal(true)}
+            disabled={companyStudents.length === 0}
           >
-            <option value="scNumber">SC Number</option>
-            <option value="gpa">GPA</option>
-            <option value="name">Name</option>
-          </select>
-          <FaSort className="absolute right-1 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs" />
+            <FaEnvelope className="mr-2" />
+            Send Email
+          </button>
         </div>
       </div>
-
-      <div className="flex-grow overflow-y-auto mb-3 space-y-2">
-        {companyStudents.length > 0 ? (
-          companyStudents.map((student) => (
-            <StudentCard
-              key={student.id}
-              student={student}
-              onRemove={onRemove}
-              isInPanel={false}
-            />
-          ))
-        ) : (
-          <div className="text-center text-gray-400 py-4">
-            Drag students here
-          </div>
-        )}
-      </div>
-
-      <div className=" flex items-center justify-between border-t pt-3 w-full">
-        {companyStudents.length > 0 ? (
-          <div className="text-sm text-gray-500">
-            {companyStudents.length}{" "}
-            {companyStudents.length === 1 ? "student" : "students"}
-          </div>
-        ) : (
-          <div></div>
-        )}
-        <button
-          className="mt-auto flex items-center justify-center w-fit px-4 py-2 bg-[#0F1D2F] text-white rounded hover:bg-gray-600 transition-colors"
-          onClick={() => console.log(`Send email to ${company.email}`)}
-        >
-          <FaEnvelope className="mr-2" />
-          Send Email
-        </button>
-      </div>
-    </div>
+      {showEmailModal && (
+        <EmailModal
+          company={company}
+          students={companyStudents}
+          onClose={() => setShowEmailModal(false)}
+          onSend={handleSendEmail}
+        />
+      )}
+    </>
   );
 };
 
@@ -182,139 +216,167 @@ const StudentPanel = ({ students, sortBy, onSort }) => {
 };
 
 // Main Component
-export default function Main() {
+export default function Main({ formId = 51 }) {
   const [students, setStudents] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [sortBy, setSortBy] = useState("scNumber");
   const [companySort, setCompanySort] = useState({});
+  const [loading, setLoading] = useState(true);
 
   // Load data from localStorage on initial render
   useEffect(() => {
-    const savedStudents = localStorage.getItem("internship-students");
-    const savedCompanies = localStorage.getItem("internship-companies");
-    const savedSort = localStorage.getItem("internship-sort");
+    const fetchData = async () => {
+      try {
+        setLoading(true);
 
-    if (savedStudents) setStudents(JSON.parse(savedStudents));
-    if (savedCompanies) setCompanies(JSON.parse(savedCompanies));
-    if (savedSort) setCompanySort(JSON.parse(savedSort));
-  }, []);
+        // Fetch companies
+        const companiesResponse = await api.get(
+          `preference-form/submission/companies?form_id=${formId}`
+        );
+
+        const companiesData = companiesResponse.data;
+
+        // Fetch students
+        const studentsResponse = await api.get(
+          `preference-form/submission/students?form_id=${formId}`
+        );
+
+        const studentsData = studentsResponse.data;
+
+        // Check if we have saved data in localStorage
+        const savedStudents = localStorage.getItem("internship-students");
+        const savedCompanies = localStorage.getItem("internship-companies");
+        const savedSort = localStorage.getItem("internship-sort");
+
+        // Use API data if no saved data exists
+        if (!savedStudents || !savedCompanies) {
+          setCompanies(companiesData.initialCompanies || []);
+          setStudents(studentsData.initialStudents || []);
+        } else {
+          // Use saved data but ensure any new students/companies from API are included
+          const parsedSavedStudents = JSON.parse(savedStudents);
+          const parsedSavedCompanies = JSON.parse(savedCompanies);
+
+          // Merge API students with saved students, preferring saved data
+          const mergedStudents = [
+            ...(studentsData.initialStudents || []).filter(
+              (apiStudent) =>
+                !parsedSavedStudents.some(
+                  (savedStudent) => savedStudent.id === apiStudent.id
+                )
+            ),
+            ...parsedSavedStudents,
+          ];
+
+          // Merge API companies with saved companies, preferring saved data
+          const mergedCompanies = [
+            ...(companiesData.initialCompanies || []).filter(
+              (apiCompany) =>
+                !parsedSavedCompanies.some(
+                  (savedCompany) => savedCompany.id === apiCompany.id
+                )
+            ),
+            ...parsedSavedCompanies,
+          ];
+
+          setStudents(mergedStudents);
+          setCompanies(mergedCompanies);
+        }
+
+        if (savedSort) {
+          const parsedSort = JSON.parse(savedSort);
+          setCompanySort(parsedSort);
+          if (parsedSort.global) {
+            setSortBy(parsedSort.global);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [formId]);
 
   // Save data to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem("internship-students", JSON.stringify(students));
-    localStorage.setItem("internship-companies", JSON.stringify(companies));
-    localStorage.setItem("internship-sort", JSON.stringify(companySort));
-  }, [students, companies, companySort]);
-
-  // Initialize with sample data if localStorage is empty
-  useEffect(() => {
-    if (students.length === 0 && companies.length === 0) {
-      const initialStudents = [
-        {
-          id: 1,
-          name: "John Doe",
-          scNumber: "SC001",
-          gpa: 3.8,
-          cvLink: "/cv/1",
-          companyId: null,
-        },
-        {
-          id: 2,
-          name: "Jane Smith",
-          scNumber: "SC002",
-          gpa: 3.5,
-          cvLink: "/cv/2",
-          companyId: null,
-        },
-        {
-          id: 3,
-          name: "Alice Johnson",
-          scNumber: "SC003",
-          gpa: 3.6,
-          cvLink: "/cv/3",
-          companyId: null,
-        },
-        {
-          id: 4,
-          name: "Bob Brown",
-          scNumber: "SC004",
-          gpa: 3.2,
-          cvLink: "/cv/4",
-          companyId: null,
-        },
-        {
-          id: 5,
-          name: "Charlie Wilson",
-          scNumber: "SC005",
-          gpa: 3.9,
-          cvLink: "/cv/5",
-          companyId: null,
-        },
-      ];
-
-      const initialCompanies = [
-        { id: 1, name: "TechCorp", email: "tech@example.com" },
-        { id: 2, name: "DesignWorks", email: "design@example.com" },
-        { id: 3, name: "InnoSoft", email: "info@innosoft.com" },
-        { id: 4, name: "NextGen Solutions", email: "contact@nextgen.com" },
-        { id: 5, name: "CodeBase", email: "hr@codebase.dev" },
-
-        // Add more companies...
-      ];
-
-      setStudents(initialStudents);
-      setCompanies(initialCompanies);
+    if (!loading && students.length > 0 && companies.length > 0) {
+      localStorage.setItem("internship-students", JSON.stringify(students));
+      localStorage.setItem("internship-companies", JSON.stringify(companies));
+      localStorage.setItem(
+        "internship-sort",
+        JSON.stringify({
+          ...companySort,
+          global: sortBy,
+        })
+      );
     }
-  }, [students.length, companies.length]);
+  }, [students, companies, companySort, sortBy, loading]);
 
   const handleDrop = useCallback((studentId, companyId) => {
-    setStudents((prevStudents) => {
-      // Remove from any existing company first
-      const updatedStudents = prevStudents.map((student) =>
-        student.id === studentId ? { ...student, companyId } : student
-      );
-      return updatedStudents;
-    });
-  }, []);
-
-  const handleRemove = useCallback((studentId) => {
     setStudents((prevStudents) =>
       prevStudents.map((student) =>
-        student.id === studentId ? { ...student, companyId: null } : student
+        student.id === studentId
+          ? {
+              ...student,
+              companyIds: [...new Set([...student.companyIds, companyId])],
+            }
+          : student
+      )
+    );
+  }, []);
+
+  const handleRemove = useCallback((studentId, companyId) => {
+    setStudents((prevStudents) =>
+      prevStudents.map((student) =>
+        student.id === studentId
+          ? {
+              ...student,
+              companyIds: student.companyIds.filter((id) => id !== companyId),
+            }
+          : student
       )
     );
   }, []);
 
   const handleSort = useCallback((criteria) => {
     setSortBy(criteria);
-    setStudents((prevStudents) =>
-      [...prevStudents].sort((a, b) => {
-        if (a.companyId !== b.companyId) {
-          return a.companyId ? 1 : -1; // Keep assigned students at the bottom
-        }
-        if (criteria === "gpa") return b.gpa - a.gpa;
-        if (criteria === "name") return a.name.localeCompare(b.name);
-        return a.scNumber.localeCompare(b.scNumber);
-      })
-    );
   }, []);
 
   const handleSortCompany = useCallback((companyId, criteria) => {
-    setCompanySort((prev) => ({ ...prev, [companyId]: criteria }));
+    setCompanySort((prev) => {
+      const newSort = { ...prev, [companyId]: criteria };
+      return newSort;
+    });
   }, []);
 
   const getSortedStudents = useCallback(() => {
-    const panelStudents = students.filter((s) => !s.companyId);
-    const sortedPanelStudents = [...panelStudents].sort((a, b) => {
-      if (sortBy === "gpa") return b.gpa - a.gpa;
-      if (sortBy === "name") return a.name.localeCompare(b.name);
-      return a.scNumber.localeCompare(b.scNumber);
-    });
+    if (loading) return [];
 
-    const companyStudents = students.filter((s) => s.companyId);
-    const sortedCompanyStudents = companyStudents
+    // First create a copy of students to sort
+    let sortedStudents = [...students];
+
+    // Sort panel students (not assigned to any company)
+    const panelStudents = sortedStudents
+      .filter((s) => s.companyIds.length === 0)
+      .sort((a, b) => {
+        if (sortBy === "gpa") return b.gpa - a.gpa;
+        if (sortBy === "name") return a.name.localeCompare(b.name);
+        return a.scNumber.localeCompare(b.scNumber);
+      });
+
+    // Sort company students
+    const companyStudents = sortedStudents
+      .filter((s) => s.companyIds.length > 0)
       .map((student) => {
-        const sortCriteria = companySort[student.companyId] || "scNumber";
+        // For company sorting, we need to determine which company's sort to use
+        // This is a bit tricky since a student might be in multiple companies
+        // We'll use the first company's sort preference as the primary sort
+        const primaryCompanyId = student.companyIds[0];
+        const sortCriteria = companySort[primaryCompanyId] || "scNumber";
+
         return {
           ...student,
           sortKey:
@@ -326,23 +388,36 @@ export default function Main() {
         };
       })
       .sort((a, b) => {
-        if (a.companyId !== b.companyId) return 0; // Already grouped by company
-        if (typeof a.sortKey === "number") return b.sortKey - a.sortKey;
-        return a.sortKey.localeCompare(b.sortKey);
+        // First sort by the primary sort key
+        if (typeof a.sortKey === "number") {
+          if (b.sortKey !== a.sortKey) return b.sortKey - a.sortKey;
+        } else {
+          const nameCompare = a.sortKey.localeCompare(b.sortKey);
+          if (nameCompare !== 0) return nameCompare;
+        }
+
+        // Then by student name as a secondary sort
+        return a.name.localeCompare(b.name);
       });
 
-    return [...sortedPanelStudents, ...sortedCompanyStudents];
-  }, [students, sortBy, companySort]);
+    return [...panelStudents, ...companyStudents];
+  }, [students, sortBy, companySort, loading]);
 
   const sortedStudents = getSortedStudents();
-  const panelStudents = sortedStudents.filter((s) => !s.companyId);
+  const panelStudents = sortedStudents.filter((s) => s.companyIds.length === 0);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="flex min-h-screen">
         <div className="flex-grow p-8 mr-80">
-          {" "}
-          {/* Right margin for fixed panel */}
           <h1 className="text-2xl font-bold mb-8 text-center">
             SELECT INTERNSHIPS
           </h1>
@@ -355,6 +430,7 @@ export default function Main() {
                 onDrop={handleDrop}
                 onRemove={handleRemove}
                 onSortCompany={handleSortCompany}
+                companySort={companySort}
               />
             ))}
           </div>
