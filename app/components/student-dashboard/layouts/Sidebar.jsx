@@ -11,9 +11,11 @@ import {
   FaInfoCircle,
   FaJournalWhills,
   FaComments,
+  FaAngleLeft,
+  FaAngleRight,
 } from "react-icons/fa";
 
-export default function Sidebar() {
+export default function Sidebar({ isCollapsed, toggleSidebar }) {
   const pathname = usePathname();
 
   const links = [
@@ -60,13 +62,27 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="w-[250px] h-auto bg-white text-[#0F1D2F] flex flex-col overflow-y-auto p-4 pb-4 rounded-3xl ml-3 m-8 border-2 border-[#1C3A5B] fixed top-[64px]">
-      <Link
-        href={"/student-dashboard"}
-        className="text-xl font-bold mb-4 text-center"
-      >
-        Dashboard
-      </Link>
+    <div
+      className={`fixed top-24 h-fit left-2 bg-white text-[#0F1D2F] flex flex-col  p-4 pb-4 rounded-3xl border-2 border-[#1C3A5B] transition-all duration-300 z-10 ${
+        isCollapsed ? "w-20" : "w-64"
+      }`}
+    >
+      <div className="flex justify-between items-center mb-4">
+        {!isCollapsed && (
+          <Link
+            href={"/student-dashboard"}
+            className="text-xl font-bold text-center"
+          >
+            Dashboard
+          </Link>
+        )}
+        <button
+          onClick={toggleSidebar}
+          className="text-xl p-2 rounded-lg hover:bg-[#1C3A5B] hover:text-blue-50"
+        >
+          {isCollapsed ? <FaAngleRight /> : <FaAngleLeft />}
+        </button>
+      </div>
       <nav className="flex flex-col gap-3">
         {links.map(({ href, icon, label }) => (
           <Link
@@ -77,9 +93,10 @@ export default function Sidebar() {
                 ? "font-bold bg-[#1C3A5B] text-blue-50"
                 : "hover:bg-[#1C3A5B] hover:text-blue-50"
             }`}
+            title={isCollapsed ? label : ""}
           >
             <span className="text-xl">{icon}</span>
-            {label}
+            {!isCollapsed && <span className="whitespace-nowrap">{label}</span>}
           </Link>
         ))}
       </nav>

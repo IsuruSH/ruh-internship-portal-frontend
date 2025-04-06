@@ -9,6 +9,7 @@ import {
   FaIdCard,
   FaCalendarAlt,
   FaGraduationCap,
+  FaFilePdf,
 } from "react-icons/fa";
 import SpiderWebChart from "../../components/student-dashboard/layouts/SpiderWeb";
 import ResultsTable from "../../components/student-dashboard/layouts/ResultsTable";
@@ -16,10 +17,10 @@ import { useUser } from "../../context/UserContext";
 import api from "../../lib/axios";
 
 const Page = () => {
-  const userContext = useUser();
   const [studentData, setStudentData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
+  const [cvFile, setCvFile] = useState(null);
   const [formData, setFormData] = useState({
     address: "",
     email: "",
@@ -92,12 +93,28 @@ const Page = () => {
         const updatedData = await response.json();
         setStudentData(updatedData);
         setEditMode(false);
-        // Show success message
-      } else {
-        // Handle error
       }
     } catch (error) {
       console.error("Error updating profile:", error);
+    }
+  };
+
+  const handleCvUpload = async (e) => {
+    e.preventDefault();
+    try {
+      const formPayload = new FormData();
+      if (cvFile) {
+        formPayload.append("cv", cvFile);
+      }
+
+      const response = await api.put(`/student/${user.id}/cv`, formPayload);
+      if (response.ok) {
+        const updatedData = await response.json();
+        setStudentData(updatedData);
+        setCvFile(null);
+      }
+    } catch (error) {
+      console.error("Error updating CV:", error);
     }
   };
 
@@ -286,12 +303,45 @@ const Page = () => {
                     </div>
                   </div>
 
+                  <div className="space-y-2 mb-6">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Curriculum Vitae
+                    </label>
+                    {studentData.cvLink && (
+                      <div className="flex items-center mb-2">
+                        <FaFilePdf className="text-red-500 mr-2" />
+                        <a
+                          href={`${process.env.NEXT_PUBLIC_SERVER_URL}${studentData.cvLink}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          View Current CV
+                        </a>
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="cv"
+                      accept=".pdf,.doc,.docx"
+                      onChange={(e) => setCvFile(e.target.files[0])}
+                      className="w-full p-2 border border-gray-300 rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleCvUpload}
+                      className="mt-2 px-4 py-2 bg-[#0F1D2F] text-white rounded-lg hover:bg-[#1E3A8A] transition-colors"
+                      disabled={!cvFile}
+                    >
+                      Upload New CV
+                    </button>
+                  </div>
+
                   <div className="flex justify-end space-x-3">
                     <button
                       type="button"
                       onClick={() => {
                         setEditMode(false);
-                        // Reset form to original data
                         setFormData({
                           address: studentData.address || "",
                           email: studentData.email || "",
@@ -368,6 +418,27 @@ const Page = () => {
                       <p className="font-medium">
                         {studentData.gpa || "Not available"}
                       </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                    <FaFilePdf className="text-gray-400 mr-3" />
+                    <div>
+                      <p className="text-xs text-gray-500">Curriculum Vitae</p>
+                      {studentData.cvLink ? (
+                        <a
+                          href={`${process.env.NEXT_PUBLIC_SERVER_URL}${studentData.cvLink}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-medium text-blue-600 hover:underline"
+                        >
+                          View CV
+                        </a>
+                      ) : (
+                        <p className="font-medium text-gray-500">
+                          No CV uploaded
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
