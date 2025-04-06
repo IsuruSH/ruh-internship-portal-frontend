@@ -68,7 +68,7 @@ const StudentHoverCard = ({ studentId, children }) => {
               <div className="flex items-start space-x-4">
                 <Avatar className="h-16 w-16">
                   <AvatarImage
-                    src={studentData.profileImage}
+                    src={`${process.env.NEXT_PUBLIC_SERVER_URL}${studentData.profileImage}`}
                     className="rounded-full border border-gray-300"
                   />
                   <AvatarFallback className="bg-gray-100 rounded-full flex items-center justify-center h-16 w-16">

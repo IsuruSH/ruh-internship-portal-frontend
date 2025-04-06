@@ -163,8 +163,6 @@ const Page = ({}) => {
         } else {
           router.push("/pages/auth?mode=login");
         }
-      } else {
-        toast.error(response.data.message);
       }
     } catch (error) {
       toast.error(error.message);

@@ -51,10 +51,7 @@ const StudentCard = ({ student, onRemove, isInPanel, companyId }) => {
           C V
         </a>
         <StudentHoverCard studentId={`${student.id}`}>
-          <span
-            className="text-gray-500 hover:text-gray-700"
-            title="Student Info"
-          >
+          <span className="text-gray-500 hover:text-gray-700">
             <FaInfoCircle />
           </span>
         </StudentHoverCard>
@@ -98,7 +95,7 @@ const CompanyBox = ({
   const handleSendEmail = async (emailData) => {
     try {
       // Here you would call your API to send the email
-      await api.post("/send-email", emailData);
+      await api.post("/email/send-email", emailData);
       setShowEmailModal(false);
       toast.success("Email sent successfully!");
     } catch (error) {
@@ -221,12 +218,50 @@ const StudentPanel = ({ students, sortBy, onSort }) => {
 };
 
 // Main Component
-export default function Main({ formId = 51 }) {
+export default function Main() {
   const [students, setStudents] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [sortBy, setSortBy] = useState("scNumber");
   const [companySort, setCompanySort] = useState({});
   const [loading, setLoading] = useState(true);
+  const [batches, setBatches] = useState([]);
+  const [selectedBatch, setSelectedBatch] = useState("");
+  const [formId, setFormId] = useState(null);
+
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        const response = await api.get("preference-form/batch/batches");
+
+        setBatches(response.data || []);
+        if (response.data.length > 0) {
+          setSelectedBatch(response.data[0]); // Set default to first batch
+        }
+      } catch (error) {
+        toast.error("Failed to load batches");
+      }
+    };
+    fetchBatches();
+  }, []);
+
+  // Fetch form data when batch changes
+  useEffect(() => {
+    if (!selectedBatch) return;
+
+    const fetchFormData = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(
+          `preference-form/batch/batch?batch=${selectedBatch}`
+        );
+        console.log(response.data.forms);
+        setFormId(response.data.forms.id);
+      } catch (error) {
+        toast.error("Failed to load form data");
+      }
+    };
+    fetchFormData();
+  }, [selectedBatch]);
 
   // Load data from localStorage on initial render
   useEffect(() => {
@@ -423,9 +458,27 @@ export default function Main({ formId = 51 }) {
     <DndProvider backend={HTML5Backend}>
       <div className="flex min-h-screen">
         <div className="flex-grow p-8 mr-80">
-          <h1 className="text-2xl font-bold mb-8 text-center">
-            SELECT INTERNSHIPS
-          </h1>
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-2xl font-bold">SELECT INTERNSHIPS</h1>
+            <div className="flex items-center">
+              <label htmlFor="batch-select" className="mr-2 font-medium">
+                Select Batch:
+              </label>
+              <select
+                id="batch-select"
+                value={selectedBatch}
+                onChange={(e) => setSelectedBatch(e.target.value)}
+                className="border bg-white rounded px-3 py-1"
+              >
+                {batches.map((batch) => (
+                  <option key={batch} value={batch}>
+                    {batch}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
             {companies.map((company) => (
               <CompanyBox
