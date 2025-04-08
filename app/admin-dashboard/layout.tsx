@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
 import Header from "../components/admin-dashboard/layouts/Header";
-import Sidebar from "../components/admin-dashboard/layouts/Sidebar";
+import { SidebarWrapper } from "../components/admin-dashboard/layouts/SidebarWarpper";
 import api from "../lib/axios";
 import { UserProvider } from "../context/AdminContext";
 import { cookies } from "next/headers";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -28,10 +29,9 @@ async function getUserData() {
   try {
     const response = await api.get("/auth/admin/verify-token", {
       headers: {
-        Cookie: `token=${token}`, // Send token in the Cookie header
+        Cookie: `token=${token}`,
       },
     });
-
     return response.data.user;
   } catch (error) {
     console.error("Failed to fetch user data:", error);
@@ -51,8 +51,7 @@ export default async function RootLayout({
       <UserProvider user={user}>
         <div className="min-h-screen">
           <Header />
-          <Sidebar />
-          <main className="pt-16 pl-64 p-8 min-h-screen">{children}</main>
+          <SidebarWrapper>{children}</SidebarWrapper>
         </div>
       </UserProvider>
     </div>

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 export default function UserProfile() {
   const [companies, setCompanies] = useState([]); // Store fetched companies
-  const [companyId, setCompanyId] = useState(""); // Selected company ID
+  const [company_id, setCompanyId] = useState(""); // Selected company ID
   const [designation, setDesignation] = useState("");
   const [duration, setDuration] = useState("3 months"); // Default time period
 
@@ -27,7 +27,7 @@ export default function UserProfile() {
   }, []);
 
   const handleSaveChanges = async () => {
-    const internshipData = { companyId, designation, duration };
+    const internshipData = { company_id, designation, duration };
 
     try {
       const response = await api.post("/internship", internshipData);
@@ -56,7 +56,7 @@ export default function UserProfile() {
           </label>
           <select
             id="company"
-            value={companyId}
+            value={company_id}
             onChange={(e) => setCompanyId(e.target.value)}
             className="w-full p-2 border border-gray-300 rounded"
           >

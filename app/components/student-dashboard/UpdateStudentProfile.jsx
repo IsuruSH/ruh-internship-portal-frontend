@@ -14,7 +14,7 @@ export default function Home() {
     academic_year: "",
     gpa: "",
     profileImage: null,
-    resultSheet: null,
+    cvLink: null,
   });
   //emporary URL to preview the selected profile image before uploading
   const [profilePreview, setProfilePreview] = useState(null);
@@ -44,9 +44,9 @@ export default function Home() {
       setProfilePreview(imageUrl);
       setFormData({ ...formData, profileImage: file });
     }
-    if (fileType === "resultSheet" && file?.type === "application/pdf") {
-      setFormData({ ...formData, resultSheet: file });
-    } else if (fileType === "resultSheet") {
+    if (fileType === "cvLink" && file?.type === "application/pdf") {
+      setFormData({ ...formData, cvLink: file });
+    } else if (fileType === "cvLink") {
       alert("Please upload a valid PDF file.");
     }
   };
@@ -63,10 +63,7 @@ export default function Home() {
     });
 
     try {
-      const response = await api.put(
-        `/api/v1/student/${user.id}`,
-        formDataToSend
-      );
+      const response = await api.put(`/student/${user.id}`, formDataToSend);
       console.log(response.data);
     } catch (error) {}
 
@@ -188,7 +185,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* GPA & CV Upload */}
+        {/* GPA & cvLink Upload */}
         <div className="grid grid-cols-2 gap-4 mb-5">
           <div>
             <label className="block text-sm font-medium text-gray-700">
@@ -209,17 +206,18 @@ export default function Home() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">
-              CV (PDF)
+              cvLink (PDF)
             </label>
             <input
               type="file"
+              name="cvLink"
               accept="application/pdf"
-              onChange={(e) => handleFileChange(e, "resultSheet")}
+              onChange={(e) => handleFileChange(e, "cvLink")}
               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 p-2"
             />
-            {formData.resultSheet && (
+            {formData.cvLink && (
               <p className="text-sm text-gray-600 mt-2">
-                Uploaded: {formData.resultSheet.name}
+                Uploaded: {formData.cvLink.name}
               </p>
             )}
           </div>
