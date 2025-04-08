@@ -16,7 +16,7 @@ export default function DashboardPage() {
       </div>
 
       <OverviewCards batch={selectedBatch} />
-      <ChartsSection />
+      <ChartsSection batch={selectedBatch} />
     </>
   );
 }
