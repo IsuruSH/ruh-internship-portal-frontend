@@ -14,29 +14,118 @@ import {
   FaHandshake,
   FaGraduationCap,
 } from "react-icons/fa";
-import exp from "constants";
+import api from "../../lib/axios";
+import { useUser } from "../../context/UserContext";
+import toast from "react-hot-toast";
+
+const fetchStatusTimeline = async (studentId) => {
+  try {
+    const response = await api.get(`/status/${studentId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching status timeline:", error);
+    throw error;
+  }
+};
+
+const updateStudentStatus = async (status, studentId) => {
+  try {
+    console.log("Updating status:", status, studentId);
+    const response = await api.post(`/status/update-status/${studentId}`, {
+      status,
+    });
+    if (response.status === 200) {
+      toast.success(response.data.message || "Status updated successfully");
+    }
+    return response.data;
+  } catch (error) {
+    toast.error(error.message || "Failed to update status");
+    throw error;
+  }
+};
+
+const saveCompanyDetails = async (details) => {
+  try {
+    console.log("Saving company details:", details);
+    const response = await api.post(
+      `/status/company/${details.studentId}`,
+      details
+    );
+
+    if (response.status === 200) {
+      toast.success(
+        response.data.message || "Company details saved successfully"
+      );
+    }
+    return response.data;
+  } catch (error) {
+    toast.error(error.message || "Failed to save company details");
+    throw error;
+  }
+};
 
 export default function CurrentStatus() {
   const router = useRouter();
   const [activeStep, setActiveStep] = useState(1);
   const [companyDetails, setCompanyDetails] = useState({
     name: "",
+    supervisorName: "",
     supervisorEmail: "",
     supervisorPhone: "",
   });
   const [expandedStep, setExpandedStep] = useState(null);
   const [showCompanyDetails, setShowCompanyDetails] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const user = useUser();
+
+  const statusToStepId = {
+    application_submitted: 1,
+    interview_invitation: 2,
+    interview_completed: 3,
+    selection_decision: 4,
+    internship_started: 5,
+    internship_completed: 6,
+  };
 
   useEffect(() => {
-    console.log(expandedStep);
-    console.log(activeStep);
-  }, [expandedStep, activeStep]);
+    const loadStatus = async () => {
+      try {
+        setIsLoading(true);
+        const data = await fetchStatusTimeline(user.id);
 
+        if (data.statusTimeline && data.statusTimeline.length > 0) {
+          // Get the highest status
+          const latestStatus = data.statusTimeline.reduce((prev, current) =>
+            new Date(current.date_achieved) > new Date(prev.date_achieved)
+              ? current
+              : prev
+          );
+
+          setActiveStep(statusToStepId[latestStatus.status]);
+        }
+
+        if (data.companyDetails) {
+          setCompanyDetails({
+            name: data.companyDetails.name,
+            supervisorEmail: data.companyDetails.supervisorEmail,
+            supervisorPhone: data.companyDetails.supervisorPhone,
+            supervisorName: data.companyDetails.supervisorName,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to load status:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadStatus();
+  }, []);
   const steps = [
     {
       id: 1,
-      title: "Application Submitted",
-      description: "Your application has been successfully submitted",
+      title: "CV Submitted",
+      description: "Your CV has been successfully submitted",
       icon: <FaFileAlt className="text-blue-500" />,
       date: "2023-10-15",
       action: "No action needed",
@@ -92,21 +181,85 @@ export default function CurrentStatus() {
     setExpandedStep(expandedStep === stepId ? null : stepId);
   };
 
-  const updateStatus = (stepId) => {
+  const updateStatus = async (stepId) => {
     if (stepId <= activeStep + 1) {
-      setActiveStep(stepId);
+      try {
+        setIsLoading(true);
+
+        // Find the status key from stepId
+        const statusKey = Object.keys(statusToStepId).find(
+          (key) => statusToStepId[key] === stepId
+        );
+
+        if (statusKey) {
+          const result = await updateStudentStatus(statusKey, user.id);
+
+          if (result.requiresCompanyDetails) {
+            setShowCompanyDetails(true);
+          }
+
+          setActiveStep(stepId);
+          setExpandedStep(stepId);
+        }
+      } catch (error) {
+        console.error("Failed to update status:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleSaveCompanyDetails = async () => {
+    try {
+      setIsLoading(true);
+      await saveCompanyDetails({
+        name: companyDetails.name,
+        supervisorEmail: companyDetails.supervisorEmail,
+        supervisorPhone: companyDetails.supervisorPhone,
+        supervisorName: companyDetails.supervisorName,
+        studentId: user.id,
+      });
+
+      setExpandedStep(4);
+      setShowCompanyDetails(false);
+    } catch (error) {
+      console.error("Failed to save company details:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
+    <div className="max-w-5xl mx-auto pt-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
         My Internship Journey
       </h1>
 
-      <div className="relative">
+      {/* Progress summary */}
+      <div className="mt-8 bg-blue-50 rounded-xl p-6 w-full">
+        <h3 className="text-lg font-semibold text-[#0F1D2F] mb-3">
+          Your Progress
+        </h3>
+        <div className="w-full bg-gray-200 rounded-full h-2.5">
+          <div
+            className="bg-[#0F1D2F] h-2.5 rounded-full"
+            style={{
+              width: `${((activeStep - 1) / (steps.length - 1)) * 100}%`,
+            }}
+          ></div>
+        </div>
+        <p className="mt-2 text-sm text-gray-600">
+          Completed {activeStep - 1} of {steps.length - 1} steps (
+          {Math.round(((activeStep - 1) / (steps.length - 1)) * 100)}%)
+        </p>
+        <p className="mt-3 text-[#0F1D2F] font-medium">
+          Current stage: {steps[activeStep - 1].title}
+        </p>
+      </div>
+
+      <div className="relative px-6 mb-28">
         {/* Vertical Timeline */}
-        <div className="space-y-8">
+        <div className="space-y-8 mt-12">
           {steps.map((step) => (
             <div
               key={step.id}
@@ -183,9 +336,10 @@ export default function CurrentStatus() {
                             Not Selected
                           </button>
                           <button
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation(); // This prevents the parent onClick from firing
                               setShowCompanyDetails(true);
-                              setExpandedStep(4.1);
+                              setExpandedStep(4); // Keep step 4 expanded
                             }}
                             className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200"
                           >
@@ -195,7 +349,7 @@ export default function CurrentStatus() {
                       </div>
                     )}
 
-                    {showCompanyDetails && (
+                    {step.id === 4 && showCompanyDetails && (
                       <div className="mt-4 bg-gray-50 p-4 rounded-lg animate-fadeIn">
                         <h4 className="font-medium flex items-center text-gray-800 mb-3">
                           <FaBuilding className="mr-2 text-blue-500" />
@@ -211,6 +365,21 @@ export default function CurrentStatus() {
                               name="name"
                               value={companyDetails.name}
                               onChange={handleCompanyDetailsChange}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-[#0F1D2F] focus:border-[#0F1D2F]"
+                              placeholder="Enter company name"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                              Supervisor Name
+                            </label>
+                            <input
+                              type="text"
+                              name="supervisorName"
+                              value={companyDetails.supervisorName}
+                              onChange={handleCompanyDetailsChange}
+                              onClick={(e) => e.stopPropagation()}
                               className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-[#0F1D2F] focus:border-[#0F1D2F]"
                               placeholder="Enter company name"
                             />
@@ -224,6 +393,7 @@ export default function CurrentStatus() {
                               name="supervisorEmail"
                               value={companyDetails.supervisorEmail}
                               onChange={handleCompanyDetailsChange}
+                              onClick={(e) => e.stopPropagation()}
                               className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-[#0F1D2F] focus:border-[#0F1D2F]"
                               placeholder="supervisor@company.com"
                             />
@@ -237,6 +407,7 @@ export default function CurrentStatus() {
                               name="supervisorPhone"
                               value={companyDetails.supervisorPhone}
                               onChange={handleCompanyDetailsChange}
+                              onClick={(e) => e.stopPropagation()}
                               className="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-[#0F1D2F] focus:border-[#0F1D2F]"
                               placeholder="+94 76 123 4567"
                             />
@@ -249,9 +420,9 @@ export default function CurrentStatus() {
                               Cancel
                             </button>
                             <button
-                              onClick={() => {
-                                updateStatus(4);
-                                setExpandedStep(4);
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSaveCompanyDetails();
                               }}
                               className="px-3 py-1 bg-[#0F1D2F] text-white rounded text-sm hover:bg-[#1E3A8A]"
                             >
@@ -291,26 +462,6 @@ export default function CurrentStatus() {
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Progress summary */}
-        <div className="mt-8 bg-blue-50 rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-[#0F1D2F] mb-3">
-            Your Progress
-          </h3>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div
-              className="bg-[#0F1D2F] h-2.5 rounded-full"
-              style={{ width: `${(activeStep / steps.length) * 100}%` }}
-            ></div>
-          </div>
-          <p className="mt-2 text-sm text-gray-600">
-            Completed {activeStep} of {steps.length} steps (
-            {Math.round((activeStep / steps.length) * 100)}%)
-          </p>
-          <p className="mt-3 text-[#0F1D2F] font-medium">
-            Current stage: {steps[activeStep - 1].title}
-          </p>
         </div>
       </div>
     </div>
