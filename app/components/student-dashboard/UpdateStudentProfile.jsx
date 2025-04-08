@@ -5,6 +5,7 @@ import api from "../../lib/axios";
 import { useUser } from "../../context/UserContext";
 
 export default function Home() {
+  //store student details and file uploads
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -15,23 +16,27 @@ export default function Home() {
     profileImage: null,
     cvLink: null,
   });
+  //emporary URL to preview the selected profile image before uploading
   const [profilePreview, setProfilePreview] = useState(null);
+
+  //urrent date and time (auto-updated every second)
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const user = useUser();
   const router = useRouter();
 
+  //update time every second
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentDateTime(new Date());
     }, 1000);
     return () => clearInterval(interval);
   }, []);
-
+  // updating text inputs in the form based
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
+  //Handles file selection
   const handleFileChange = (e, fileType) => {
     const file = e.target.files[0];
     if (fileType === "profileImage" && file) {

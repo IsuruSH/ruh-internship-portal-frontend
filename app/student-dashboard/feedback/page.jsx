@@ -1,12 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import savefeedback from "../../api/feedbackapi.js"; // Default import
+import savefeedback from "../../api/feedbackapi.js"; 
 import { useUser } from "../../context/UserContext";
+import toast from "react-hot-toast";
 
 export default function Feedback() {
   const [scNumber, setScNumber] = useState("");
   const [company, setCompany] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const user = useUser();
 
   // Set scNumber when user is available
@@ -22,9 +24,44 @@ export default function Feedback() {
     feedback: feedback,
   };
 
-  const handleSaveChanges = () => {
-    console.log(feedbackData);
-    savefeedback(feedbackData); // Using the default import
+  const handleSaveChanges = async () => {
+    // Validate inputs
+    if (!company.trim()) {
+      toast.error("Please enter company name");
+      return;
+    }
+    if (!feedback.trim()) {
+      toast.error("Please enter your feedback");
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      console.log("Submitting feedback:", feedbackData);
+      
+      // Using toast.promise to handle loading, success, and error states
+      await toast.promise(
+        savefeedback(feedbackData),
+        {
+          loading: 'Saving your feedback...',
+          success: 'Feedback submitted successfully!',
+          error: (err) => {
+            console.error("Feedback submission error:", err);
+            return err.message || 'Failed to submit feedback';
+          }
+        }
+      );
+      
+      // Clear form after successful submission
+      setCompany("");
+      setFeedback("");
+    } catch (err) {
+      // Error is already handled by toast.promise
+      console.error("Error in handleSaveChanges:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -43,7 +80,7 @@ export default function Feedback() {
             id="sc_no"
             className="w-full p-2 border border-gray-300 rounded"
             value={scNumber}
-            readOnly // Make it non-editable if needed
+            readOnly
           />
         </div>
         <div className="mb-6">
@@ -56,6 +93,7 @@ export default function Feedback() {
             className="w-full p-2 border border-gray-300 rounded"
             value={company}
             onChange={(e) => setCompany(e.target.value)}
+            disabled={isSubmitting}
           />
         </div>
         <div className="mb-6">
@@ -75,14 +113,18 @@ export default function Feedback() {
               e.target.style.height = "auto";
               e.target.style.height = `${e.target.scrollHeight}px`;
             }}
+            disabled={isSubmitting}
           ></textarea>
         </div>
         <div className="flex justify-end mb-4">
           <button
             onClick={handleSaveChanges}
-            className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-gray-600"
+            disabled={isSubmitting}
+            className={`py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-gray-600 ${
+              isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            Save Changes
+            {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>
