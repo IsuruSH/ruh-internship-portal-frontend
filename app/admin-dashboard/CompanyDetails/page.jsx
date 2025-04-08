@@ -10,6 +10,7 @@ import {
   FiAlertTriangle,
   FiChevronLeft,
   FiChevronRight,
+  FiEdit2,
 } from "react-icons/fi";
 import api from "../../lib/axios";
 import { toast } from "react-hot-toast";
@@ -34,6 +35,8 @@ const CompanyDetails = () => {
   const handleDeleteClick = (company) => {
     setDeleteModal({ isOpen: true, company });
   };
+
+  const handleEditClick = (companyId) => {};
 
   const handleDeleteConfirm = async () => {
     if (!deleteModal.company) return;
@@ -180,12 +183,22 @@ const CompanyDetails = () => {
                         {company.note}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => handleDeleteClick(company)}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          <FiTrash2 />
-                        </button>
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleEditClick(company.id)}
+                            className="text-blue-600 hover:text-blue-900"
+                            title="Edit"
+                          >
+                            <FiEdit2 />
+                          </button>
+                          <button
+                            onClick={() => handleDeleteClick(company)}
+                            className="text-red-600 hover:text-red-900"
+                            title="Delete"
+                          >
+                            <FiTrash2 />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))}

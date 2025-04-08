@@ -5,7 +5,7 @@ import api from "@/app/lib/axios";
 
 const NoticesSection = () => {
   const [expandedNotice, setExpandedNotice] = useState(null);
-  const [notices, setNotices] = useState([]);
+  const [notices, setNotices] = useState([]); // Initialize as empty array
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,11 +13,15 @@ const NoticesSection = () => {
     const fetchNotices = async () => {
       try {
         setLoading(true);
-        const response = await api.get("/notices");
-        setNotices(response?.data);
+        const response = await api.get("/notices/important");
+        // Ensure we always have an array, even if response.data is null/undefined
+        setNotices(
+          Array.isArray(response?.data.notices) ? response.data.notices : []
+        );
       } catch (err) {
         setError(err.response?.data?.message || "Failed to load notices");
         console.error("Error fetching notices:", err);
+        setNotices([]); // Reset to empty array on error
       } finally {
         setLoading(false);
       }
@@ -30,13 +34,16 @@ const NoticesSection = () => {
     setExpandedNotice(expandedNotice === id ? null : id);
   };
 
-  // Filter important, non-expired notices (max 3)
-  const importantNotices = notices.filter(
-    (notice) =>
-      notice.isImportant &&
-      (!notice.expiresAt || new Date(notice.expiresAt) > new Date()).slice(0, 3)
-  );
+  // Safely filter notices
+  const importantNotices = Array.isArray(notices)
+    ? notices.filter(
+        (notice) =>
+          notice?.isImportant &&
+          (!notice?.expiresAt || new Date(notice.expiresAt) > new Date())
+      )
+    : [];
 
+  // ... rest of your component remains the same ...
   if (loading) {
     return (
       <section className="max-w-6xl mx-auto px-4 py-8">
@@ -83,7 +90,7 @@ const NoticesSection = () => {
           Important Announcements
         </h2>
         <a
-          href="/notices"
+          href="/pages/notices"
           className="text-sm font-medium text-[#0F1D2F] hover:underline flex items-center"
         >
           View all notices <FaChevronRight className="ml-1" />
@@ -91,8 +98,8 @@ const NoticesSection = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {importantNotices.length > 0 ? (
-          importantNotices.map((notice) => (
+        {notices?.length > 0 ? (
+          notices?.map((notice) => (
             <div
               key={notice.id}
               className={`bg-white rounded-xl shadow-md overflow-hidden border-l-4 ${

@@ -1,39 +1,39 @@
 .footerContainer {
-    @apply relative bg-no-repeat bg-cover text-white py-6 mt-8 text-lg mx-auto;
-    background-image: url('/assets/unigray.png');
-  }
+  @apply relative bg-no-repeat bg-cover text-white py-6 text-lg mx-auto;
+  background-image: url("/assets/unigray.png");
+}
 
-  .footerText {
-    @apply font-bold text-sm text-gray-400 text-center mt-6;
-  }
+.footerText {
+  @apply font-bold text-sm text-gray-400 text-center mt-6;
+}
 
-  .footerTitle {
-    @apply text-lg font-bold mb-6;
-  }
-  
+.footerTitle {
+  @apply text-lg font-bold mb-6;
+}
+
 .footerSection {
-    @apply flex flex-col place-items-center mx-1;
-  }
-  
+  @apply flex flex-col place-items-center mx-1;
+}
+
 .footerGrid {
-    @apply relative container mx-auto grid grid-cols-1 md:grid-cols-3 gap-4;
-  }
+  @apply relative container mx-auto grid grid-cols-1 md:grid-cols-3 gap-4;
+}
 
 .socialList {
-    @apply flex space-x-4; /* Tailwind utilities for flex layout and spacing */
-  }
-  
-  /* Facebook icon styling */
-  .facebook {
-    @apply text-blue-600 hover:text-blue-800 text-3xl;
-  }
-  
-  /* LinkedIn icon styling */
-  .linkedin {
-    @apply text-blue-700 hover:text-blue-900 text-3xl;
-  }
-  
-  /* YouTube icon styling */
-  .youtube {
-    @apply text-red-600 hover:text-red-800 text-3xl;
-  }
+  @apply flex space-x-4; /* Tailwind utilities for flex layout and spacing */
+}
+
+/* Facebook icon styling */
+.facebook {
+  @apply text-blue-600 hover:text-blue-800 text-3xl;
+}
+
+/* LinkedIn icon styling */
+.linkedin {
+  @apply text-blue-700 hover:text-blue-900 text-3xl;
+}
+
+/* YouTube icon styling */
+.youtube {
+  @apply text-red-600 hover:text-red-800 text-3xl;
+}
