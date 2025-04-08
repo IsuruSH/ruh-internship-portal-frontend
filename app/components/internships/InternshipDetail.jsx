@@ -44,7 +44,7 @@ export default function InternshipDetail({ internshipId }) {
           Math.random() > 0.5
             ? "The student has shown excellent progress and technical skills during the internship period."
             : null,
-        report: `https://example.com/reports/${internshipId.toLowerCase()}.pdf`,
+        report: `test.pdf`,
       };
       setInternship(mockInternship);
       setIsLoading(false);
@@ -62,15 +62,15 @@ export default function InternshipDetail({ internshipId }) {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 mt-10 mr-3">
       <Link
-        href="/dashboard/internships"
-        className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
+        href="/admin-dashboard/internships"
+        className="flex items-center text-[#0F1D2F] hover:text-[#1E3A8A] mb-6"
       >
         <FiArrowLeft className="mr-2" /> Back to Internships
       </Link>
 
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="bg-white rounded-lg overflow-hidden">
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <div>
             <h2 className="text-xl font-bold text-gray-800">
@@ -201,7 +201,7 @@ export default function InternshipDetail({ internshipId }) {
           <a
             href={internship.report}
             download
-            className="flex items-center bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="flex items-center bg-[#0F1D2F] hover:bg-[#1E3A8A] text-white px-4 py-2 rounded-md "
           >
             <FiDownload className="mr-2" /> Download Final Report
           </a>

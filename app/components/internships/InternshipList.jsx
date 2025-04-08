@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { FiSearch, FiX, FiBriefcase, FiEye } from "react-icons/fi";
+import { useEffect } from "react";
 
 export default function InternshipList() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -13,7 +14,7 @@ export default function InternshipList() {
     const fetchInternships = async () => {
       setIsLoading(true);
       // Mock data
-      const mockInternships = Array.from({ length: 15 }, (_, i) => ({
+      const mockInternships = Array.from({ length: 5 }, (_, i) => ({
         id: `INT${(i + 1).toString().padStart(3, "0")}`,
         studentId: `SC${Math.floor(Math.random() * 100) + 100}`,
         studentName: `Student ${i + 1}`,
@@ -161,7 +162,7 @@ export default function InternshipList() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <Link
-                      href={`/dashboard/internships/${internship.id}`}
+                      href={`/admin-dashboard/internships/${internship.id}`}
                       className="text-blue-600 hover:text-blue-900 flex items-center"
                     >
                       <FiEye className="mr-1" /> View

@@ -13,29 +13,23 @@ export default function StudentTable(batch) {
   useEffect(() => {
     const fetchStudents = async () => {
       setIsLoading(true);
+
       // Mock data
-      const mockStudents = Array.from({ length: 50 }, (_, i) => ({
-        id: `SC${(i + 1).toString().padStart(3, "0")}`,
-        name: `Student ${i + 1}`,
-        email: `student${i + 1}@university.edu`,
-        gpa: (Math.random() * (4.0 - 2.5) + 2.5).toFixed(2),
-        status: ["Active", "Inactive", "Graduated", "On Leave"][
-          Math.floor(Math.random() * 4)
-        ],
-        registeredDate: new Date(Date.now() - Math.random() * 31536000000)
-          .toISOString()
-          .split("T")[0],
-      }));
-      setStudents(mockStudents);
+      const res = await api.get(`/stats/getbatchstudentdetails`, {
+        params: batch, // optional batch filtering
+      });
+
+      console.log("Fetched data:", res.data);
+      setStudents(res.data);
       setIsLoading(false);
     };
 
     fetchStudents();
   }, []);
 
-  const filteredStudents = students.filter(
+  const filteredStudents = students?.filter(
     (student) =>
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      student.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       student.id.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -101,13 +95,13 @@ export default function StudentTable(batch) {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredStudents.map((student) => (
+              {filteredStudents?.map((student) => (
                 <tr key={student.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {student.id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {student.name}
+                    {student.first_name} {student.last_name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {student.email}
@@ -119,16 +113,28 @@ export default function StudentTable(batch) {
                     <span
                       className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                       ${
-                        student.status === "Active"
-                          ? "bg-green-100 text-green-800"
-                          : student.status === "Graduated"
-                          ? "bg-blue-100 text-blue-800"
-                          : student.status === "On Leave"
-                          ? "bg-yellow-100 text-yellow-800"
+                        student.InternshipStatuses[0]?.status ===
+                        "application_submitted"
+                          ? "bg-green-100 text-blue-500"
+                          : student.InternshipStatuses[0]?.status ===
+                            "interview_invitation"
+                          ? "bg-blue-100 text-orange-500"
+                          : student.InternshipStatuses[0]?.status ===
+                            "interview_completed"
+                          ? "bg-yellow-100 text-purple-500"
+                          : student.InternshipStatuses[0]?.status ===
+                            "selection_decision"
+                          ? "bg-red-100 text-green-500"
+                          : student.InternshipStatuses[0]?.status ===
+                            "internship_started"
+                          ? "bg-red-100 text-red-500"
+                          : student.InternshipStatuses[0]?.status ===
+                            "internship_completed"
+                          ? "bg-red-100 text-yellow-500"
                           : "bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {student.status}
+                      {student.InternshipStatuses[0]?.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
