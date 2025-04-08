@@ -1,78 +1,135 @@
-'use client';
+"use client";
 
-import { Radar } from 'react-chartjs-2';
-import { Chart as ChartJS, RadialLinearScale, PointElement, LineElement, Tooltip, Legend } from 'chart.js';
-import { useState, useEffect } from 'react';
+import { Radar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { useState, useEffect } from "react";
+import api from "../../../lib/axios";
+import { useUser } from "../../../context/UserContext";
+import { FaCheckCircle, FaLightbulb, FaChartLine } from "react-icons/fa";
 
-// Ensure RadialLinearScale is registered properly
-ChartJS.register(RadialLinearScale, PointElement, LineElement, Tooltip, Legend);
-
-const gradeToPoints = {
-  'A+': 12, 'A': 11, 'A-': 10,
-  'B+': 9, 'B': 8, 'B-': 7,
-  'C+': 6, 'C': 5, 'C-': 4,
-  'D+': 3, 'D': 2, 'D-': 1,
-  'E': 0,
-};
+ChartJS.register(
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Filler,
+  Tooltip,
+  Legend
+);
 
 const SpiderWebChart = () => {
-  // Dummy student grade data
-  const studentGrades = {
-    'Data Structure and Algorithms': 'A',
-    'Software Engineering': 'A-',
-    'Object Oriented System Development': 'B+',
-    'Internet Services and Web Development': 'B',
-    'Internet Programming': 'C+',
-    'Multimedia and Video Production': 'C',
-    'System Analyst & Design': 'B-',
-    'Project Management': 'C-',
-    'Data and Network Security': 'B+',
-    'E-commerce and Professional Practice': 'D+',
-    'Database Management Systems': 'C',
-    'Group Projects': 'B',
-  };
-
-  // Convert grades to points
-  const studentData = Object.fromEntries(
-    Object.entries(studentGrades).map(([course, grade]) => [course, gradeToPoints[grade] || 0])
-  );
-
-  // Mapping course units to career fields
-  const careerFields = {
-    'Software Engineering': ['Data Structure and Algorithms', 'Software Engineering', 'Object Oriented System Development'],
-    'Web Development': ['Internet Services and Web Development', 'Internet Programming', 'Multimedia and Video Production'],
-    'Quality Assurance': ['System Analyst & Design', 'Project Management', 'Data and Network Security'],
-    'Business Analysis': ['E-commerce and Professional Practice', 'Database Management Systems', 'Project Management'],
-    'Project Management': ['Project Management', 'Group Projects', 'System Analyst & Design'],
-  };
-
-  // Calculate average scores for each career field
-  const [careerScores, setCareerScores] = useState([]);
+  const [recommendations, setRecommendations] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const user = useUser();
 
   useEffect(() => {
-    const scores = Object.keys(careerFields).map((field) => {
-      const relatedCourses = careerFields[field];
-      const totalScore = relatedCourses.reduce((sum, course) => sum + (studentData?.[course] ?? 0), 0);
-      return relatedCourses.length > 0 ? (totalScore / (relatedCourses.length * 12)) * 100 : 0; // Normalize to 100 scale
-    });
-    setCareerScores(scores);
-  }, []);
+    const fetchRecommendations = async () => {
+      try {
+        const response = await api.get(`/student/recommend/${user.id}`);
+        setRecommendations(response.data.recommendations);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching recommendations:", err);
+        setError("Failed to load recommendations");
+        setLoading(false);
+      }
+    };
 
-  // Radar chart data
-  const data = {
-    labels: Object.keys(careerFields),
+    if (user.id) {
+      fetchRecommendations();
+    }
+  }, [user.id]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 p-4 rounded-lg text-red-700 text-center">
+        {error}
+      </div>
+    );
+  }
+
+  if (!recommendations) {
+    return (
+      <div className="bg-yellow-50 p-4 rounded-lg text-yellow-700 text-center">
+        No recommendation data available
+      </div>
+    );
+  }
+
+  // Prepare data for radar chart
+  const topRecommendations = recommendations.top_recommendations.slice(0, 5);
+  const chartData = {
+    labels: topRecommendations.map((rec) => rec.career),
     datasets: [
       {
-        label: 'Skill Level',
-        data: careerScores,
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-        borderColor: 'rgba(54, 162, 235, 1)',
+        label: "Overall Score",
+        data: topRecommendations.map((rec) => rec.score),
+        backgroundColor: "rgba(15, 29, 47, 0.2)",
+        borderColor: "rgba(15, 29, 47, 1)",
         borderWidth: 2,
+        pointBackgroundColor: "rgba(15, 29, 47, 1)",
+        pointBorderColor: "#fff",
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(15, 29, 47, 1)",
+        pointHoverBorderColor: "#fff",
+        pointHitRadius: 10,
+        pointBorderWidth: 2,
+        fill: true,
+      },
+      {
+        label: "Academic Fit",
+        data: topRecommendations.map((rec) =>
+          parseFloat(rec.academic_fit.replace("%", ""))
+        ),
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 2,
+        pointBackgroundColor: "rgba(75, 192, 192, 1)",
+        pointBorderColor: "#fff",
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(75, 192, 192, 1)",
+        pointHoverBorderColor: "#fff",
+        pointHitRadius: 10,
+        pointBorderWidth: 2,
+        fill: false,
+      },
+      {
+        label: "Skill Fit",
+        data: topRecommendations.map((rec) =>
+          parseFloat(rec.skill_fit.replace("%", ""))
+        ),
+        backgroundColor: "rgba(153, 102, 255, 0.2)",
+        borderColor: "rgba(153, 102, 255, 1)",
+        borderWidth: 2,
+        pointBackgroundColor: "rgba(153, 102, 255, 1)",
+        pointBorderColor: "#fff",
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: "rgba(153, 102, 255, 1)",
+        pointHoverBorderColor: "#fff",
+        pointHitRadius: 10,
+        pointBorderWidth: 2,
+        fill: false,
       },
     ],
   };
 
-  const options = {
+  const chartOptions = {
     scales: {
       r: {
         beginAtZero: true,
@@ -80,17 +137,167 @@ const SpiderWebChart = () => {
         max: 100,
         ticks: {
           stepSize: 20,
+          backdropColor: "transparent",
+          color: "#6B7280",
         },
+        angleLines: {
+          color: "#E5E7EB",
+        },
+        grid: {
+          color: "#E5E7EB",
+        },
+        pointLabels: {
+          color: "#374151",
+          font: {
+            size: 12,
+            weight: "500",
+          },
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        position: "top",
+        labels: {
+          usePointStyle: true,
+          padding: 20,
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) => {
+            const label = context.dataset.label || "";
+            const value = context.raw;
+            return `${label}: ${value.toFixed(1)}%`;
+          },
+        },
+        backgroundColor: "#0F1D2F",
+        titleColor: "#fff",
+        bodyColor: "#fff",
+        bodySpacing: 4,
+        padding: 12,
+        cornerRadius: 8,
       },
     },
     responsive: true,
     maintainAspectRatio: false,
+    elements: {
+      line: {
+        tension: -0.2, // Makes the lines slightly curved
+      },
+    },
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto h-[400px]">
-      <h2 className="text-xl font-bold text-center mb-4">Student Skill Analysis</h2>
-      <Radar data={data} options={options} />
+    <div className="bg-white rounded-xl overflow-hidden p-6">
+      <h2 className="text-xl  font-semibold border-b text-gray-800 pb-3 mb-6">
+        Career Recommendations
+      </h2>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Radar Chart */}
+        <div className="lg:col-span-2">
+          <div className="h-[400px]">
+            <Radar data={chartData} options={chartOptions} />
+          </div>
+        </div>
+
+        {/* Top Recommendation Details */}
+        <div className="space-y-6">
+          <div className="bg-blue-50 p-4 rounded-lg">
+            <h3 className="font-medium text-blue-800 flex items-center gap-2 mb-2">
+              <FaChartLine className="text-blue-600" />
+              Top Career Match
+            </h3>
+            <div className="bg-white p-3 rounded shadow-sm">
+              <h4 className="font-bold text-gray-800">
+                {topRecommendations[0].career}
+              </h4>
+              <div className="flex justify-between items-center mt-2">
+                <span className="text-sm text-gray-600">Overall Score:</span>
+                <span className="font-semibold text-blue-600">
+                  {topRecommendations[0].score.toFixed(1)}%
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Strengths */}
+          <div>
+            <h3 className="font-medium text-gray-800 flex items-center gap-2 mb-2">
+              <FaCheckCircle className="text-green-500" />
+              Your Strengths
+            </h3>
+            <ul className="space-y-2">
+              {topRecommendations[0].strengths.map((strength, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="inline-block w-2 h-2 mt-2 rounded-full bg-green-500"></span>
+                  <span className="text-gray-700">{strength}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Suggested Improvements */}
+          <div>
+            <h3 className="font-medium text-gray-800 flex items-center gap-2 mb-2">
+              <FaLightbulb className="text-yellow-500" />
+              Suggested Improvements
+            </h3>
+            <ul className="space-y-2">
+              {topRecommendations[0].suggested_improvements.map(
+                (improvement, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="inline-block w-2 h-2 mt-2 rounded-full bg-yellow-500"></span>
+                    <span className="text-gray-700">{improvement}</span>
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Skill Analysis Section */}
+      <div className="mt-8">
+        <h3 className="font-semibold text-gray-800 mb-4">Skill Analysis</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">
+              Identified Skills
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {recommendations.skill_analysis.identified_skills.map(
+                (skill, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-white text-gray-700 text-sm rounded-full shadow-sm border border-gray-200"
+                  >
+                    {skill}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-lg">
+            <h4 className="text-sm font-medium text-gray-700 mb-2">
+              Strongest Skills
+            </h4>
+            <div className="flex flex-wrap gap-2">
+              {recommendations.skill_analysis.strongest_skills.map(
+                (skill, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full shadow-sm border border-blue-200 font-medium"
+                  >
+                    {skill}
+                  </span>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

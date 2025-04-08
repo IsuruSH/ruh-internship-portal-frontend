@@ -327,14 +327,14 @@ const Page = () => {
                       onChange={(e) => setCvFile(e.target.files[0])}
                       className="w-full p-2 border border-gray-300 rounded-lg"
                     />
-                    <button
+                    {/* <button
                       type="button"
                       onClick={handleCvUpload}
                       className="mt-2 px-4 py-2 bg-[#0F1D2F] text-white rounded-lg hover:bg-[#1E3A8A] transition-colors"
                       disabled={!cvFile}
                     >
                       Upload New CV
-                    </button>
+                    </button> */}
                   </div>
 
                   <div className="flex justify-end space-x-3">
@@ -355,7 +355,7 @@ const Page = () => {
                     </button>
                     <button
                       type="submit"
-                      className="px-4 py-2 bg-[#0F1D2F] text-white rounded-lg hover:bg-[#1E3A8A] transition-colors"
+                      className="px-4 py-2  text-white rounded-lg bg-[#0F1D2F] hover:bg-[#1E3A8A] transition-colors"
                     >
                       Save Changes
                     </button>
@@ -453,7 +453,7 @@ const Page = () => {
             Academic Performance
           </h2>
           <div className="mb-8">
-            <SpiderWebChart results={studentData.resultsByYear} />
+            <SpiderWebChart />
           </div>
           <div>
             <ResultsTable results={studentData.resultsByYear} />
@@ -528,7 +528,7 @@ const Page = () => {
               </button>
               <button
                 type="button"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 bg-[#0F1D2F] hover:bg-[#1E3A8A] text-white rounded-lg transition-colors"
               >
                 Update Password
               </button>
