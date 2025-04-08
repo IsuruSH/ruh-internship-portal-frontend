@@ -1,16 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaBuilding, FaUserTie, FaClock } from "react-icons/fa";
 
 const InternshipPage = () => {
   const [internships, setInternships] = useState([]);
   const [searchCompany, setSearchCompany] = useState("");
   const [searchDesignation, setSearchDesignation] = useState("");
 
-  // Fetching internship data from the server
   useEffect(() => {
     const fetchData = async () => {
-      // Simulating API response with dummy data
       const dummyData = [
         {
           company: "Google",
@@ -18,28 +16,22 @@ const InternshipPage = () => {
           timePeriod: "3 Months",
         },
         {
-          company: "Microsoft",
-          designation: "Data Analyst Intern",
+          company: "IfS",
+          designation: "QA Intern",
           timePeriod: "6 Months",
         },
         {
-          company: "Amazon",
-          designation: "Web Developer Intern",
-          timePeriod: "4 Months",
+          company: "WSO2",
+          designation: "PM Intern",
+          timePeriod: "6 Months",
         },
         {
-          company: "Facebook",
-          designation: "UI/UX Designer Intern",
-          timePeriod: "3 Months",
+          company: "Creative Software",
+          designation: "Software Engineer Intern",
+          timePeriod: "6 Months",
         },
-        {
-          company: "Netflix",
-          designation: "Machine Learning Intern",
-          timePeriod: "5 Months",
-        },
+        // ... (rest of your dummy data)
       ];
-
-      // Simulating a server response delay
       setTimeout(() => {
         setInternships(dummyData);
       }, 1000);
@@ -47,7 +39,6 @@ const InternshipPage = () => {
     fetchData();
   }, []);
 
-  // Filtering internships based on search criteria
   const filteredInternships = internships.filter(
     (internship) =>
       internship.company.toLowerCase().includes(searchCompany.toLowerCase()) &&
@@ -56,93 +47,100 @@ const InternshipPage = () => {
         .includes(searchDesignation.toLowerCase())
   );
 
-  // Handler for search form submission
   const handleSearch = (e) => {
     e.preventDefault();
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-8">
-      <h1 className="text-2xl font-bold mb-4 text-center">INTERNSHIPS</h1>
-      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
-        <div className="flex gap-4 mb-4">
-          {/* Search by Company */}
-          <form onSubmit={handleSearch} className="flex items-center gap-2">
-            <span className="text-gray-700">Company:</span>
-            <div className="flex items-center border border-gray-300 rounded px-2">
-              <FaSearch className="text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search by Company"
-                value={searchCompany}
-                onChange={(e) => setSearchCompany(e.target.value)}
-                className="flex-1 p-2 focus:outline-none"
-              />
-            </div>
-            <button
-              type="submit"
-              className="p-2 bg-[#1E2A30] text-white rounded"
-            >
-              Search
-            </button>
-          </form>
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-gray-50">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Available Internships</h1>
+        
+        <div className="bg-white p-6 md:p-8 rounded-xl shadow-lg border border-gray-100">
+          {/* Search Section */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <form onSubmit={handleSearch} className="w-full">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaBuilding className="text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by company..."
+                  value={searchCompany}
+                  onChange={(e) => setSearchCompany(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                />
+              </div>
+            </form>
 
-          {/* Search by Designation */}
-          <form onSubmit={handleSearch} className="flex items-center gap-2">
-            <span className="text-gray-700">Designation:</span>
-            <div className="flex items-center border border-gray-300 rounded px-2">
-              <FaSearch className="text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search by Designation"
-                value={searchDesignation}
-                onChange={(e) => setSearchDesignation(e.target.value)}
-                className="flex-1 p-2 focus:outline-none"
-              />
-            </div>
-            <button
-              type="submit"
-              className="p-2 bg-[#1E2A30] text-white rounded"
-            >
-              Search
-            </button>
-          </form>
-        </div>
+            <form onSubmit={handleSearch} className="w-full">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <FaUserTie className="text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by designation..."
+                  value={searchDesignation}
+                  onChange={(e) => setSearchDesignation(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                />
+              </div>
+            </form>
+          </div>
 
-        {/* Internships Table */}
-        <table className="w-full border border-collapse">
-          <thead>
-            <tr>
-              <th className="border p-2 text-center bg-gray-200">Company</th>
-              <th className="border p-2 text-center bg-gray-200">
-                Designation
-              </th>
-              <th className="border p-2 text-center bg-gray-200">
-                Time Period
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredInternships.length > 0 ? (
-              filteredInternships.map((internship, index) => (
-                <tr key={index} className="h-10">
-                  <td className="border p-2">{internship.company}</td>
-                  <td className="border p-2">{internship.designation}</td>
-                  <td className="border p-2">{internship.timePeriod}</td>
+          {/* Modern Table Design */}
+          <div className="overflow-x-auto rounded-lg border border-gray-200">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center">
+                      <FaBuilding className="mr-2" />
+                      Company
+                    </div>
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center">
+                      <FaUserTie className="mr-2" />
+                      Designation
+                    </div>
+                  </th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <div className="flex items-center">
+                      <FaClock className="mr-2" />
+                      Duration
+                    </div>
+                  </th>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan="3"
-                  className="border p-4 text-center text-gray-500"
-                >
-                  No internships found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredInternships.length > 0 ? (
+                  filteredInternships.map((internship, index) => (
+                    <tr key={index} className="hover:bg-gray-50 transition">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="font-medium text-gray-900">{internship.company}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-gray-700">{internship.designation}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-gray-500">{internship.timePeriod}</div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
+                      No internships match your search criteria
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   );
