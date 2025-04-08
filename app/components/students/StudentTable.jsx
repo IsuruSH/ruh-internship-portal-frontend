@@ -25,7 +25,7 @@ export default function StudentTable(batch) {
     };
 
     fetchStudents();
-  }, []);
+  }, [batch]);
 
   const filteredStudents = students?.filter(
     (student) =>
@@ -98,7 +98,7 @@ export default function StudentTable(batch) {
               {filteredStudents?.map((student) => (
                 <tr key={student.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {student.id}
+                    {student.student_id}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {student.first_name} {student.last_name}

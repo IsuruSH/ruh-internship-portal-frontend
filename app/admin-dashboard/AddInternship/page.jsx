@@ -2,15 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaSearch, FaTrash } from "react-icons/fa";
-import { Trash2, X, AlertTriangle, Pencil } from "lucide-react";
+import {
+  FiSearch,
+  FiTrash2,
+  FiEdit2,
+  FiPlus,
+  FiX,
+  FiAlertTriangle,
+} from "react-icons/fi";
 import api from "../../lib/axios";
 import { toast } from "react-hot-toast";
 
 const InternshipDashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [interns, setInterns] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
     intern: null,
@@ -26,29 +32,27 @@ const InternshipDashboard = () => {
     setDeleteModal({ isOpen: true, intern });
   };
 
+  const handleEditClick = (intern) => {
+    router.push(`AddInternship/EditInternForm/${intern.id}`);
+  };
+
   const handleDeleteConfirm = async () => {
     if (!deleteModal.intern) return;
 
-    // Remove the intern from the list
     try {
-      // Make the API call to delete the company
       const response = await api.delete(`/internship/${deleteModal.intern.id}`);
       if (response.status === 200) {
         toast.success(response.data.message);
+        setInterns(
+          interns.filter((intern) => intern.id !== deleteModal.intern.id)
+        );
       } else {
         toast.error(response.data.message);
       }
-
-      // Update the local state
-      setInterns(
-        interns.filter((interns) => interns.id !== deleteModal.interns?.id)
-      );
-
-      // Close the modal
       setDeleteModal({ isOpen: false, intern: null });
     } catch (error) {
-      console.error("Error deleting company:", error);
-      // Here you might want to show an error message to the user
+      console.error("Error deleting internship:", error);
+      toast.error("Failed to delete internship");
     }
   };
 
@@ -57,83 +61,121 @@ const InternshipDashboard = () => {
   );
 
   useEffect(() => {
-    // Fetch data from API
     async function fetchData() {
+      setIsLoading(true);
       try {
         const response = await api.get("/internship");
-        console.log(response.data);
-        setInterns(response.data?.internships);
+        setInterns(response.data?.internships || []);
       } catch (error) {
-        console.error("Error fetching company data:", error);
+        console.error("Error fetching internship data:", error);
+        toast.error("Failed to fetch internships");
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchData();
   }, []);
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto mx-4">
-      <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-        ADD INTERNSHIPS
-      </h1>
-      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
-        <div className="flex items-center mb-6 space-x-4 justify-between">
-          <div className="flex items-center space-x-2 flex-1">
+    <div className="p-6 mt-10">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">
+          Internship Dashboard
+        </h1>
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search Company Name"
+              placeholder="Search company name..."
               value={searchTerm}
               onChange={handleSearch}
-              className="border rounded p-2 w-1/3 h-10"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <button className="bg-[#0F1D2F] text-white p-2 rounded-lg h-10 w-12 flex items-center justify-center hover:bg-blue-700">
-              <FaSearch />
-            </button>
           </div>
           <button
-            className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600"
             onClick={() => router.push("AddInternship/AddInternForm")}
+            className="flex items-center bg-[#0F1D2F] text-white px-4 py-2 rounded-lg hover:bg-[#1E3A8A] transition-colors"
           >
-            + Add Intern
+            <FiPlus className="mr-2" /> Add Internship
           </button>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-sm">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border px-4 py-2 bg-gray-300">No</th>
-                <th className="border px-4 py-2 bg-gray-300">Company Name</th>
-                <th className="border px-4 py-2 bg-gray-300">Designation</th>
-                <th className="border px-4 py-2 bg-gray-300">Time Period</th>
-                <th className="border px-4 py-2 bg-gray-300">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredInterns.map((intern, index) => (
-                <tr key={intern.id} className="border-b hover:bg-gray-50">
-                  <td className="px-4 py-3">{index + 1}</td>
-                  <td className="px-4 py-3">{intern.Company.name}</td>
-                  <td className="px-4 py-3">{intern.designation}</td>
-                  <td className="border-r px-4 py-3">{intern.duration}</td>
-                  <td className=" px-1 py-3 flex items-center justify-center gap-5 space-x-3">
-                    <button
-                      onClick={() => handleEditClick(intern)}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      <Pencil className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(intern)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <FaTrash className="w-5 h-5" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </div>
+
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      ) : filteredInterns.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          {searchTerm
+            ? "No matching internships found"
+            : "No internships available"}
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    No
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Company Name
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Designation
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Time Period
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredInterns.map((intern, index) => (
+                  <tr key={intern.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {index + 1}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {intern.Company?.name}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {intern.designation}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {intern.duration}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleEditClick(intern)}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          <FiEdit2 />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteClick(intern)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          <FiTrash2 />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
       <DeleteModal
         isOpen={deleteModal.isOpen}
         intern={deleteModal.intern}
@@ -144,7 +186,6 @@ const InternshipDashboard = () => {
   );
 };
 
-// Delete Confirmation Modal
 const DeleteModal = ({ isOpen, intern, onClose, onConfirm }) => {
   if (!isOpen || !intern) return null;
 
@@ -155,19 +196,19 @@ const DeleteModal = ({ isOpen, intern, onClose, onConfirm }) => {
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
         >
-          <X className="w-5 h-5" />
+          <FiX className="w-5 h-5" />
         </button>
 
         <div className="flex items-center justify-center mb-4">
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-            <AlertTriangle className="w-6 h-6 text-red-600" />
+            <FiAlertTriangle className="w-6 h-6 text-red-600" />
           </div>
         </div>
 
         <h3 className="text-xl font-bold text-center mb-2">Confirm Deletion</h3>
         <p className="text-gray-600 text-center mb-6">
-          Are you sure you want to delete{" "}
-          <span className="font-semibold">{intern.companyname}</span>? This
+          Are you sure you want to delete the internship at{" "}
+          <span className="font-semibold">{intern.Company?.name}</span>? This
           action cannot be undone.
         </p>
 
@@ -182,7 +223,7 @@ const DeleteModal = ({ isOpen, intern, onClose, onConfirm }) => {
             onClick={onConfirm}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
           >
-            <Trash2 className="w-4 h-4" />
+            <FiTrash2 className="w-4 h-4" />
             Delete
           </button>
         </div>

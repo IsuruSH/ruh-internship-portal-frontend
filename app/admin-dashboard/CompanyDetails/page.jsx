@@ -1,23 +1,34 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FaSearch, FaTrash } from "react-icons/fa";
+import {
+  FiSearch,
+  FiTrash2,
+  FiPlus,
+  FiX,
+  FiAlertTriangle,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import api from "../../lib/axios";
-import { Trash2, X, AlertTriangle } from "lucide-react";
 import { toast } from "react-hot-toast";
 
-const InternshipDashboard = () => {
+const CompanyDetails = () => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [companies, setCompanies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState({
     isOpen: false,
     company: null,
   });
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
   };
 
   const handleDeleteClick = (company) => {
@@ -28,24 +39,19 @@ const InternshipDashboard = () => {
     if (!deleteModal.company) return;
 
     try {
-      // Make the API call to delete the company
       const response = await api.delete(`/company/${deleteModal.company.id}`);
       if (response.status === 200) {
         toast.success(response.data.message);
+        setCompanies(
+          companies.filter((company) => company.id !== deleteModal.company.id)
+        );
       } else {
         toast.error(response.data.message);
       }
-
-      // Update the local state
-      setCompanies(
-        companies.filter((company) => company.id !== deleteModal.company?.id)
-      );
-
-      // Close the modal
       setDeleteModal({ isOpen: false, company: null });
     } catch (error) {
       console.error("Error deleting company:", error);
-      // Here you might want to show an error message to the user
+      toast.error("Failed to delete company");
     }
   };
 
@@ -57,89 +63,204 @@ const InternshipDashboard = () => {
     company?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCompanies.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
+  const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   useEffect(() => {
-    // Fetch data from API
     async function fetchData() {
+      setIsLoading(true);
       try {
         const response = await api.get("/company");
-        setCompanies(response.data?.companies);
+        setCompanies(response.data?.companies || []);
       } catch (error) {
         console.error("Error fetching company data:", error);
+        toast.error("Failed to fetch companies");
+      } finally {
+        setIsLoading(false);
       }
     }
     fetchData();
   }, []);
 
   return (
-    <div className="flex-grow p-8 overflow-y-auto  mx-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">COMPANY DETAILS</h1>
-      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
-        <div className="search-section flex items-center mb-4 space-x-4 justify-between">
-          <div className="flex items-center space-x-2 flex-1">
+    <div className="p-6 mt-10">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-gray-800">Company Details</h1>
+        <div className="flex items-center space-x-4">
+          <div className="relative">
+            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
-              placeholder="Search Company Name"
+              placeholder="Search company name..."
               value={searchTerm}
               onChange={handleSearch}
-              className="border rounded p-2 w-1/3 h-10"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            <button className="bg-[#0F1D2F] text-white p-2 rounded-lg h-10 w-12 flex items-center justify-center hover:bg-blue-700">
-              <FaSearch />
-            </button>
           </div>
-          <div className="flex justify-end space-x-2">
-            {/* <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">
-              Save
-            </button>
-            <button className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600">
-              Edit
-            </button> */}
-            <button
-              className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600"
-              onClick={handleAddCompany}
-            >
-              + Add Company
-            </button>
-          </div>
-        </div>
-        <div className="intern-table">
-          <table className="min-w-full bg-gray-50">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border px-4 py-2 bg-gray-300">No</th>
-                <th className="border px-4 py-2 bg-gray-300">Company Name</th>
-                <th className="border px-4 py-2 bg-gray-300">Address</th>
-                <th className="border px-4 py-2 bg-gray-300">Email</th>
-                <th className="border px-4 py-2 bg-gray-300">Contact No</th>
-                <th className="border px-4 py-2 bg-gray-300">Contact Person</th>
-                <th className="border px-4 py-2 bg-gray-300">Note</th>
-                <th className="border px-4 py-2 bg-gray-300">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCompanies.map((company, index) => (
-                <tr key={company.id}>
-                  <td className="border px-4 py-2">{index + 1}</td>
-                  <td className="border px-4 py-2">{company.name}</td>
-                  <td className="border px-4 py-2">{company.address}</td>
-                  <td className="border px-4 py-2">{company.email}</td>
-                  <td className="border px-4 py-2">{company.phone}</td>
-                  <td className="border px-4 py-2">{company.person}</td>
-                  <td className="border px-4 py-2">{company.note}</td>
-                  <td className="border px-4 py-2">
-                    <button
-                      onClick={() => handleDeleteClick(company)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <FaTrash />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <button
+            onClick={handleAddCompany}
+            className="flex items-center bg-[#0F1D2F] text-white px-4 py-2 rounded-lg hover:bg-[#1E3A8A] transition-colors"
+          >
+            <FiPlus className="mr-2" /> Add Company
+          </button>
         </div>
       </div>
+
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        </div>
+      ) : filteredCompanies.length === 0 ? (
+        <div className="text-center py-8 text-gray-500">
+          {searchTerm
+            ? "No matching companies found"
+            : "No companies available"}
+        </div>
+      ) : (
+        <>
+          <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      No
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Company Name
+                    </th>
+
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Email
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Contact No
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Contact Person
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Note
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentItems.map((company, index) => (
+                    <tr key={company.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {indexOfFirstItem + index + 1}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm font-medium text-gray-900">
+                          {company.name}
+                        </div>
+                      </td>
+
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {company.email}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {company.phone}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {company.person}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                        {company.note}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={() => handleDeleteClick(company)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          <FiTrash2 />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4 px-2">
+              <div className="text-sm text-gray-500">
+                Showing {indexOfFirstItem + 1} to{" "}
+                {Math.min(indexOfLastItem, filteredCompanies.length)} of{" "}
+                {filteredCompanies.length} companies
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => paginate(Math.max(1, currentPage - 1))}
+                  disabled={currentPage === 1}
+                  className={`p-2 rounded-lg border ${
+                    currentPage === 1
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  <FiChevronLeft />
+                </button>
+
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => paginate(pageNum)}
+                      className={`w-10 h-10 rounded-lg ${
+                        currentPage === pageNum
+                          ? "bg-[#0F1D2F] text-white"
+                          : "border border-gray-300 text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
+
+                <button
+                  onClick={() =>
+                    paginate(Math.min(totalPages, currentPage + 1))
+                  }
+                  disabled={currentPage === totalPages}
+                  className={`p-2 rounded-lg border ${
+                    currentPage === totalPages
+                      ? "text-gray-400 cursor-not-allowed"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  <FiChevronRight />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
       <DeleteModal
         isOpen={deleteModal.isOpen}
         company={deleteModal.company}
@@ -160,12 +281,12 @@ const DeleteModal = ({ isOpen, company, onClose, onConfirm }) => {
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
         >
-          <X className="w-5 h-5" />
+          <FiX className="w-5 h-5" />
         </button>
 
         <div className="flex items-center justify-center mb-4">
           <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
-            <AlertTriangle className="w-6 h-6 text-red-600" />
+            <FiAlertTriangle className="w-6 h-6 text-red-600" />
           </div>
         </div>
 
@@ -187,7 +308,7 @@ const DeleteModal = ({ isOpen, company, onClose, onConfirm }) => {
             onClick={onConfirm}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
           >
-            <Trash2 className="w-4 h-4" />
+            <FiTrash2 className="w-4 h-4" />
             Delete
           </button>
         </div>
@@ -196,4 +317,4 @@ const DeleteModal = ({ isOpen, company, onClose, onConfirm }) => {
   );
 };
 
-export default InternshipDashboard;
+export default CompanyDetails;
