@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import savefeedback from "../../api/feedbackapi.js"; 
+
 import { useUser } from "../../context/UserContext";
 import toast from "react-hot-toast";
 
@@ -11,7 +12,6 @@ export default function Feedback() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const user = useUser();
 
-  // Set scNumber when user is available
   useEffect(() => {
     if (user?.student_id) {
       setScNumber(user.student_id);
@@ -23,6 +23,7 @@ export default function Feedback() {
     company_name: company,
     feedback: feedback,
   };
+
 
   const handleSaveChanges = async () => {
     // Validate inputs
@@ -126,6 +127,7 @@ export default function Feedback() {
           >
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>
+
         </div>
       </div>
     </div>

@@ -151,7 +151,6 @@ const Page = ({}) => {
             password: formData.signUpPassword,
           };
 
-
       // Make API call
       const response = await api.post(endpoint, payload);
       //console.log(response);
@@ -166,9 +165,8 @@ const Page = ({}) => {
         }
       }
     } catch (error) {
-      toast.error("Error occurred. Please try again.");
+      toast.error(error.message);
       setServerError(error.message);
-      console.error("API Error:", error);
     } finally {
       setLoading(false);
     }

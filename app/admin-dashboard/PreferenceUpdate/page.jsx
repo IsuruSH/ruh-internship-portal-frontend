@@ -1,199 +1,199 @@
+// app/preferences/page.js
 "use client";
-import React, { useState } from "react";
-import { Save, Settings, AlertCircle, Plus, Minus } from "lucide-react";
 
-function App() {
-  const [formData, setFormData] = useState({
-    batch: "",
-    numberOfPreferences: 1,
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FaSearch, FaEdit, FaTrash } from "react-icons/fa";
+import api from "../../lib/axios";
+import { Plus, AlertTriangle, X, Trash2 } from "lucide-react";
+import { toast } from "react-hot-toast";
+import Link from "next/link";
+
+const PreferencesPage = () => {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [preferenceForms, setPreferenceForms] = useState([]);
+  const [deleteModal, setDeleteModal] = useState({
+    isOpen: false,
+    form: null,
   });
-  const [savedPreferences, setSavedPreferences] = useState([]);
-  const [showSaveMessage, setShowSaveMessage] = useState(false);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
   };
 
-  const incrementPreferences = () => {
-    setFormData((prev) => ({
-      ...prev,
-      numberOfPreferences: prev.numberOfPreferences + 1,
-    }));
+  const handleDeleteClick = (form) => {
+    setDeleteModal({ isOpen: true, form });
   };
 
-  const decrementPreferences = () => {
-    if (formData.numberOfPreferences > 1) {
-      setFormData((prev) => ({
-        ...prev,
-        numberOfPreferences: prev.numberOfPreferences - 1,
-      }));
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.form) return;
+
+    try {
+      const response = await api.delete(
+        `/preference-form/${deleteModal.form.id}`
+      );
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        setPreferenceForms(
+          preferenceForms.filter((form) => form.id !== deleteModal.form?.id)
+        );
+      } else {
+        toast.error(response.data.message);
+      }
+      setDeleteModal({ isOpen: false, form: null });
+    } catch (error) {
+      console.error("Error deleting form:", error);
+      toast.error("Failed to delete form");
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!formData.batch) {
-      alert("Please enter the batch");
-      return;
-    }
-
-    const newPreference = {
-      ...formData,
-      id: Date.now(),
-      createdAt: new Date().toISOString().split("T")[0],
-    };
-
-    setSavedPreferences((prev) => [...prev, newPreference]);
-    setShowSaveMessage(true);
-    setTimeout(() => setShowSaveMessage(false), 3000);
-
-    // Reset form
-    setFormData({
-      batch: "",
-      numberOfPreferences: 1,
-    });
+  const handleEditForm = (formId) => {
+    router.push(`PreferenceUpdate/edit/${formId}`);
   };
+
+  const filteredForms = preferenceForms.filter((form) =>
+    form?.batch?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await api.get("/preference-form");
+        setPreferenceForms(response.data?.forms || []);
+        console.log(response.data?.forms);
+      } catch (error) {
+        console.error("Error fetching preference forms:", error);
+      }
+    }
+    fetchData();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Preference Settings
-          </h1>
-          <p className="text-gray-600">
-            Set the number of company preferences for each batch
-          </p>
-        </div>
-
-        {/* Form */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="flex items-center mb-6">
-            <AlertCircle className="w-5 h-5 text-blue-500 mr-2" />
-            <p className="text-sm text-gray-600">
-              Students will be able to select companies based on these
-              preference settings
-            </p>
+    <div className="flex-grow p-8 overflow-y-auto mx-4">
+      <h1 className="text-2xl font-bold mb-4 text-center">PREFERENCE FORMS</h1>
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-6xl mx-auto">
+        <div className="search-section flex items-center mb-4 space-x-4 justify-between">
+          <div className="flex items-center space-x-2 flex-1">
+            <input
+              type="text"
+              placeholder="Search by batch"
+              value={searchTerm}
+              onChange={handleSearch}
+              className="border rounded p-2 w-1/3 h-10"
+            />
+            <button className="bg-[#0F1D2F] text-white p-2 rounded-lg h-10 w-12 flex items-center justify-center hover:bg-blue-700">
+              <FaSearch />
+            </button>
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Batch*
-              </label>
-              <input
-                type="text"
-                name="batch"
-                value={formData.batch}
-                onChange={handleInputChange}
-                placeholder="e.g., 2020/21"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Number of Preferences
-              </label>
-              <div className="flex items-center space-x-4">
-                <button
-                  type="button"
-                  onClick={decrementPreferences}
-                  className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                  disabled={formData.numberOfPreferences <= 1}
-                >
-                  <Minus className="w-4 h-4" />
-                </button>
-                <span className="text-lg font-medium w-12 text-center">
-                  {formData.numberOfPreferences}
-                </span>
-                <button
-                  type="button"
-                  onClick={incrementPreferences}
-                  className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <button
-                type="submit"
-                className="w-full inline-flex justify-center items-center px-6 py-3 bg-[#0F1D2F] text-white rounded-lg hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                Save Preferences
-              </button>
-            </div>
-          </form>
-        </div>
-
-        {/* Saved Preferences Table */}
-        {savedPreferences.length > 0 && (
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">Saved Preferences</h2>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Batch
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Number of Preferences
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Created At
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {savedPreferences.map((pref) => (
-                    <tr key={pref.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {pref.batch}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {pref.numberOfPreferences}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {pref.createdAt}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Success Message */}
-        {showSaveMessage && (
-          <div className="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center">
-            <svg
-              className="w-5 h-5 mr-2"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="flex justify-end space-x-2">
+            <Link
+              href="PreferenceUpdate/create"
+              className="py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-blue-600 flex items-center gap-2"
             >
-              <path d="M5 13l4 4L19 7"></path>
-            </svg>
-            Preferences saved successfully!
+              <Plus className="w-4 h-4" />
+              Add New Form
+            </Link>
           </div>
-        )}
+        </div>
+        <div className="preference-table">
+          <table className="min-w-full bg-gray-50">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border px-4 py-2 bg-gray-300">No</th>
+                <th className="border px-4 py-2 bg-gray-300">Batch</th>
+                <th className="border px-4 py-2 bg-gray-300">Deadline</th>
+                <th className="border px-4 py-2 bg-gray-300">Preferences</th>
+                <th className="border px-4 py-2 bg-gray-300">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredForms.map((form, index) => (
+                <tr key={form.id}>
+                  <td className="border px-4 py-2">{index + 1}</td>
+                  <td className="border px-4 py-2">{form.batch}</td>
+                  <td className="border px-4 py-2">
+                    {new Date(form.deadline).toLocaleDateString()}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {form.Preferences?.length || 0} preferences
+                  </td>
+                  <td className="text-lg border px-4 py-2 flex justify-center space-x-2">
+                    <button
+                      onClick={() => handleEditForm(form.id)}
+                      className="text-blue-600 hover:text-blue-800 p-1"
+                      title="Edit"
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteClick(form)}
+                      className="text-red-600 hover:text-red-800 p-1"
+                      title="Delete"
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <DeleteModal
+        isOpen={deleteModal.isOpen}
+        form={deleteModal.form}
+        onClose={() => setDeleteModal({ isOpen: false, form: null })}
+        onConfirm={handleDeleteConfirm}
+      />
+    </div>
+  );
+};
+
+const DeleteModal = ({ isOpen, form, onClose, onConfirm }) => {
+  if (!isOpen || !form) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-[400px] relative">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+        >
+          <X className="w-5 h-5" />
+        </button>
+
+        <div className="flex items-center justify-center mb-4">
+          <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+            <AlertTriangle className="w-6 h-6 text-red-600" />
+          </div>
+        </div>
+
+        <h3 className="text-xl font-bold text-center mb-2">Confirm Deletion</h3>
+        <p className="text-gray-600 text-center mb-6">
+          Are you sure you want to delete the preference form for{" "}
+          <span className="font-semibold">{form.batch}</span>? This action
+          cannot be undone.
+        </p>
+
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2"
+          >
+            <Trash2 className="w-4 h-4" />
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default PreferencesPage;

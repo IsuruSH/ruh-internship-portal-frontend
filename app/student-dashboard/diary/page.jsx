@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { useUser } from "../../context/UserContext";
@@ -172,8 +173,52 @@ export default function DiaryUpdates() {
           </>
         )}
 
-        {/* Buttons */}
-        <div className="flex justify-between mb-4">
+
+  // Save weekly entry
+  const saveWeeklyEntry = () => {
+    if (!weekNumber || !weeklyNote) return;
+    
+    const { start, end } = getWeekDates(weekNumber);
+    const newEntry = {
+      id: Date.now(),
+      type: 'weekly',
+      weekNumber,
+      note: weeklyNote,
+      dateRange: `${format(start, 'MMM d')} - ${format(end, 'MMM d')}`,
+    };
+
+    // Remove existing weekly entry if exists
+    const filteredEntries = entries.filter(entry => 
+      !(entry.type === 'weekly' && entry.weekNumber === weekNumber)
+    );
+
+    setEntries([...filteredEntries, newEntry]);
+    setWeeklyNote("");
+  };
+
+  // Get all weekly entries
+  const getWeeklyEntries = () => {
+    return entries
+      .filter(entry => entry.type === 'weekly')
+      .sort((a, b) => a.weekNumber - b.weekNumber);
+  };
+
+  // Get daily entries for selected week
+  const getDailyEntriesForWeek = (weekNum) => {
+    const { start, end } = getWeekDates(weekNum);
+    return entries
+      .filter(entry => entry.type === 'daily')
+      .filter(entry => isWithinInterval(new Date(entry.date), { start, end }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Diary Updates</h1>
+        
+        {/* Mode Selection */}
+        <div className="flex mb-6 border-b border-gray-200">
           <button
             className={`py-2 px-4 bg-[#0F1D2F] text-white rounded hover:bg-gray-600 transition-colors ${
               isLoading || !note || (searchType === "daily" && !date) || (searchType === "weekly" && !week)
@@ -216,10 +261,12 @@ export default function DiaryUpdates() {
                   Close
                 </button>
               </div>
+
             </div>
           </div>
         )}
       </div>
     </div>
   );
-}``
+}
+
