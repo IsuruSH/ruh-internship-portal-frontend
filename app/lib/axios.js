@@ -4,7 +4,7 @@ const api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}`, // Your backend base URL
   withCredentials: true, // For cookies/sessions
   headers: {
-    "Content-Type": "application/json",
+    //"Content-Type": "application/json",
   },
 });
 

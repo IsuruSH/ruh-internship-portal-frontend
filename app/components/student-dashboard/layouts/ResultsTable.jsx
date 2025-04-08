@@ -1,86 +1,80 @@
 import React from "react";
 
-const ResultsTable = () => {
-  const resultsData = [
-    {
-      level1: ["Programing Techniques", "A"],
-      level2: ["Object Oriented Programming", "A"],
-      level3: ["Data Warehousing and Data mining", "00"],
-    },
-    {
-      level1: ["System Analyst & Design", "A"],
-      level2: ["Operating Systems", "A"],
-      level3: ["Distributed Systems", "00"],
-    },
-    {
-      level1: ["Data Structure and Algorithms", "B"],
-      level2: ["Project Management", "00"],
-      level3: ["E-commerce and Professional Practice", "00"],
-    },
-    {
-      level1: ["Software Engineering", "B"],
-      level2: ["Data and Network Security", "00"],
-      level3: ["Internet Protocol", "00"],
-    },
-    {
-      level1: ["Database Management Systems", "A"],
-      level2: ["Internet Programming", "00"],
-      level3: ["Group Projects", "00"],
-    },
-  ];
+const ResultsTable = ({ results }) => {
+  const transformResultsData = (resultsByYear) => {
+    const maxRows = Math.max(
+      ...resultsByYear.map((year) => year.subjects.length)
+    );
+
+    return Array.from({ length: maxRows }).map((_, rowIndex) => {
+      const rowData = {};
+
+      resultsByYear.forEach((year) => {
+        const subject = year.subjects[rowIndex] || {
+          subject_name: "-",
+          grade: "-",
+        };
+        rowData[`level${year.year}`] = [subject.subject_name, subject.grade];
+      });
+
+      return rowData;
+    });
+  };
+
+  const resultsData = results ? transformResultsData(results) : [];
 
   return (
-    <div className="mb-8">
-      <h3 className="text-lg font-semibold mb-4">Result & GPA</h3>
-      <h4 className="text-base font-semibold mb-2">GPA: 3.5</h4>
-      <h4 className="text-base font-semibold mb-2">Results: </h4>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-400">
-          <thead>
-            <tr className="bg-slate-400 text-black text-center">
-              <th colSpan="2" className="py-2 px-4 border">
-                Level 1
-              </th>
-              <th colSpan="2" className="py-2 px-4 border">
-                Level 2
-              </th>
-              <th colSpan="2" className="py-2 px-4 border">
-                Level 3
-              </th>
+    <div className="bg-white  p-6 mb-8">
+      <h2 className="text-xl font-semibold text-gray-800 mb-6 border-b-2 border-gray-200 pb-2">
+        Academic Results
+      </h2>
+
+      <div className="overflow-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50">
+            <tr>
+              {results?.map((year) => (
+                <th
+                  key={year.year}
+                  colSpan="2"
+                  className="px-4 py-3 text-left text-sm font-medium text-gray-700"
+                >
+                  Year {year.year}
+                </th>
+              ))}
             </tr>
-            <tr className="bg-gray-300 text-gray-800 text-center">
-              <th className="py-2 px-4 border">Subject</th>
-              <th className="py-2 px-4 border">Results</th>
-              <th className="py-2 px-4 border">Subject</th>
-              <th className="py-2 px-4 border">Results</th>
-              <th className="py-2 px-4 border">Subject</th>
-              <th className="py-2 px-4 border">Results</th>
+            <tr>
+              {results?.map((year) => (
+                <React.Fragment key={`headers-${year.year}`}>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                    Subject
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                    Grade
+                  </th>
+                </React.Fragment>
+              ))}
             </tr>
           </thead>
-          <tbody>
-            {resultsData.map((item, index) => (
+          <tbody className="divide-y divide-gray-200">
+            {resultsData.map((row, rowIndex) => (
               <tr
-                key={index}
-                className={`${index % 2 === 0 ? "bg-gray-100" : "bg-white"}`}
+                key={rowIndex}
+                className={rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"}
               >
-                <td className="py-2 px-4 border text-center">
-                  {item.level1[0]}
-                </td>
-                <td className="py-2 px-4 border text-center">
-                  {item.level1[1]}
-                </td>
-                <td className="py-2 px-4 border text-center">
-                  {item.level2[0]}
-                </td>
-                <td className="py-2 px-4 border text-center">
-                  {item.level2[1]}
-                </td>
-                <td className="py-2 px-4 border text-center">
-                  {item.level3[0]}
-                </td>
-                <td className="py-2 px-4 border text-center">
-                  {item.level3[1]}
-                </td>
+                {results?.map((year) => {
+                  const subjectData = row[`level${year.year}`] || ["-", "-"];
+                  return (
+                    <React.Fragment key={`data-${year.year}-${rowIndex}`}>
+                      <td className="px-4 py-3 text-sm text-gray-800">
+                        {subjectData[0]}
+                      </td>
+                      <td className="px-4 py-3 text-sm font-medium text-gray-800">
+                        {subjectData[1]}
+                      </td>
+                    </React.Fragment>
+                  );
+                })}
               </tr>
             ))}
           </tbody>

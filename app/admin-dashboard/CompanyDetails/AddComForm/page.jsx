@@ -39,7 +39,7 @@ export default function UserProfile() {
       <h1 className="text-2xl font-bold mb-4 text-center">
         ADD COMPANY DETAILS
       </h1>
-      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-4xl mx-auto">
+      <div className="bg-white p-8 shadow-md rounded-lg w-full max-w-5xl mx-auto">
         <form onSubmit={handleSaveChanges}>
           <div className="mb-6">
             <label htmlFor="name" className="block text-base font-medium mb-2">

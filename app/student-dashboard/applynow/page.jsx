@@ -65,7 +65,6 @@ export default function MainContent() {
 
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching form data:", error);
         setIsLoading(false);
       }
     }

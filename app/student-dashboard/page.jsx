@@ -22,7 +22,7 @@ const Page = () => {
         setFirstLogin(response.data.first_login);
 
         if (!response.data.first_login) {
-          router.push("/student-dashboard"); // Redirect if first_login is false
+          router.push("/student-dashboard/userprofile"); // Redirect if first_login is false
         } else {
           setIsModalOpen(true); // Open modal if first_login is true
         }

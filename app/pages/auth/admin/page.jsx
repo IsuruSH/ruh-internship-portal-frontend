@@ -54,7 +54,7 @@ function App() {
         router.push("/admin-dashboard");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Something went wrong"); // Show backend error message
+      toast.error(error.message); // Show backend error message
     }
   };
 
