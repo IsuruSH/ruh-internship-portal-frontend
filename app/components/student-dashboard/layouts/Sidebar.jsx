@@ -14,11 +14,34 @@ import {
   FaAngleLeft,
   FaAngleRight,
 } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import api from "@/app/lib/axios";
+import { useUser } from "@/app/context/UserContext";
 
 export default function Sidebar({ isCollapsed, toggleSidebar }) {
   const pathname = usePathname();
+  const user = useUser();
+  const [status, setStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const links = [
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        if (user?.id) {
+          const response = await api.get(`/status/current/${user.id}`);
+          setStatus(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching status:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStatus();
+  }, [user?.id]);
+
+  const baseLinks = [
     {
       href: "/student-dashboard/userprofile",
       icon: <FaUser />,
@@ -44,6 +67,9 @@ export default function Sidebar({ isCollapsed, toggleSidebar }) {
       icon: <FaSortNumericDown />,
       label: "Current Status",
     },
+  ];
+
+  const internshipLinks = [
     {
       href: "/student-dashboard/about",
       icon: <FaInfoCircle />,
@@ -61,9 +87,32 @@ export default function Sidebar({ isCollapsed, toggleSidebar }) {
     },
   ];
 
+  // Combine links based on status
+  const links = [
+    ...baseLinks,
+    ...(status?.status === "internship_started" ||
+    status?.status === "internship_completed"
+      ? internshipLinks
+      : []),
+  ];
+
+  if (loading) {
+    return (
+      <div
+        className={`fixed top-24 h-fit left-2 bg-white text-[#0F1D2F] flex flex-col p-4 pb-4 rounded-3xl border-2 border-[#1C3A5B] transition-all duration-300 z-10 ${
+          isCollapsed ? "w-20" : "w-64"
+        }`}
+      >
+        <div className="flex justify-center items-center h-20">
+          <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-[#1C3A5B]"></div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`fixed top-24 h-fit left-2 bg-white text-[#0F1D2F] flex flex-col  p-4 pb-4 rounded-3xl border-2 border-[#1C3A5B] transition-all duration-300 z-10 ${
+      className={`fixed top-24 h-fit left-2 bg-white text-[#0F1D2F] flex flex-col p-4 pb-4 rounded-3xl border-2 border-[#1C3A5B] transition-all duration-300 z-10 ${
         isCollapsed ? "w-20" : "w-64"
       }`}
     >
